@@ -33,67 +33,93 @@
   --font-sans: var(--font-lato), var(--font-heebo), system-ui, sans-serif;
 }
 
-/* Dark theme (default) — uszkota.pl brand */
+/* Dark theme (default) — PowerDig Serwis brand */
 :root {
-  --radius: 0rem;
+  --radius: 0.25rem;
 
-  --background: 24 24 24;
-  --foreground: 255 255 255;
+  --background: 10 10 10;
+  --foreground: 245 240 232;
 
-  --primary: 242 22 40;
-  --primary-foreground: 255 255 255;
+  --primary: 200 119 34;
+  --primary-foreground: 10 10 10;
 
-  --secondary: 173 146 113;
-  --secondary-foreground: 24 24 24;
+  --secondary: 180 98 26;
+  --secondary-foreground: 245 240 232;
 
-  --muted: 45 45 45;
-  --muted-foreground: 225 225 225;
+  --muted: 25 25 25;
+  --muted-foreground: 160 150 130;
 
-  --card: 0 0 0;
-  --card-foreground: 255 255 255;
-  --popover: 24 24 24;
-  --popover-foreground: 255 255 255;
+  --card: 17 17 17;
+  --card-foreground: 245 240 232;
+  --popover: 17 17 17;
+  --popover-foreground: 245 240 232;
 
-  --accent: 173 146 113;
-  --accent-foreground: 24 24 24;
+  --accent: 230 151 48;
+  --accent-foreground: 10 10 10;
 
   --destructive: 220 53 69;
 
-  --border: 60 60 60;
-  --input: 45 45 45;
-  --ring: 173 146 113;
+  --border: 40 35 25;
+  --input: 25 25 25;
+  --ring: 200 119 34;
 }
 
-/* Light theme override — uszkota.pl brand */
+/* Light theme override — PowerDig Serwis brand */
 .light {
-  --background: 248 248 248;
-  --foreground: 33 37 41;
+  --background: 248 244 236;
+  --foreground: 26 18 8;
 
-  --primary: 242 22 40;
+  --primary: 200 119 34;
   --primary-foreground: 255 255 255;
 
-  --secondary: 173 146 113;
+  --secondary: 166 97 24;
   --secondary-foreground: 255 255 255;
 
-  --muted: 233 235 239;
-  --muted-foreground: 102 102 102;
+  --muted: 234 228 216;
+  --muted-foreground: 100 80 50;
 
   --card: 255 255 255;
-  --card-foreground: 33 37 41;
+  --card-foreground: 26 18 8;
   --popover: 255 255 255;
-  --popover-foreground: 33 37 41;
+  --popover-foreground: 26 18 8;
 
-  --accent: 173 146 113;
-  --accent-foreground: 255 255 255;
+  --accent: 230 151 48;
+  --accent-foreground: 26 18 8;
 
   --destructive: 220 53 69;
 
-  --border: 233 235 239;
-  --input: 248 248 248;
-  --ring: 173 146 113;
+  --border: 210 200 180;
+  --input: 234 228 216;
+  --ring: 200 119 34;
 }
 
 @layer base {
+  /* ─── PowerDig page theme tokens (dark default) ─── */
+  :root {
+    --pd-bg: #0A0A0A;
+    --pd-bg-card: #111111;
+    --pd-bg-section: #0e0e0e;
+    --pd-bg-accent: #1a0d00;
+    --pd-text: #F5F0E8;
+    --pd-text-muted: rgba(245, 240, 232, 0.6);
+    --pd-text-dim: rgba(245, 240, 232, 0.3);
+    --pd-border: rgba(200, 119, 34, 0.2);
+    --pd-border-card: rgba(200, 119, 34, 0.2);
+  }
+
+  /* ─── PowerDig page theme tokens (light) ─── */
+  .light {
+    --pd-bg: #F2EDE3;
+    --pd-bg-card: #FFFFFF;
+    --pd-bg-section: #EDE7DA;
+    --pd-bg-accent: #FDF5E8;
+    --pd-text: #1A1208;
+    --pd-text-muted: rgba(26, 18, 8, 0.6);
+    --pd-text-dim: rgba(26, 18, 8, 0.35);
+    --pd-border: rgba(200, 119, 34, 0.3);
+    --pd-border-card: rgba(200, 119, 34, 0.25);
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
@@ -109,6 +135,14 @@
   h6 {
     font-family: var(--font-lato), system-ui, sans-serif;
   }
+}
+
+/* Hero vignette — theme-aware */
+.pd-hero-vignette {
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.92) 100%);
+}
+.light .pd-hero-vignette {
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, rgba(242, 237, 227, 0.4) 0%, rgba(242, 237, 227, 0.88) 100%);
 }
 
 /* Animations */

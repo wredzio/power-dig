@@ -37,9 +37,7 @@ export async function FooterSection({
 
   return (
     <footer className="bg-background">
-      {/* Decorative tartan strip */}
-      <div className="tartan-pattern h-2 w-full" />
-      <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 lg:py-16">
+<div className="mx-auto max-w-7xl px-4 py-12 md:px-6 lg:py-16">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand column */}
           <div className="flex flex-col gap-5">

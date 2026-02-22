@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler/animated-theme-toggler";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher/locale-switcher";
 import { Logo } from "@/components/ui/logo/logo";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -75,9 +76,10 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
         className={cn(
           "sticky top-0 right-0 left-0 z-50 w-full",
           "transition-all duration-500",
-          isMobileMenuOpen || isScrolled ? "bg-background" : "bg-background",
-          !isMobileMenuOpen && isScrolled && "bg-background/85 shadow-lg shadow-black/10 backdrop-blur-md",
-          "px-4 md:px-6 xl:px-0",
+          "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-gradient-to-r after:from-transparent after:via-[#C87722]/60 after:to-transparent",
+          isMobileMenuOpen || isScrolled ? "bg-background/60 backdrop-blur-md" : "bg-background/30 backdrop-blur-sm",
+          !isMobileMenuOpen && isScrolled && "shadow-lg shadow-black/10",
+          "px-6",
           className,
         )}
       >
@@ -99,9 +101,9 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
                     rel={link.external ? "noopener noreferrer" : undefined}
                     className={cn(
                       "bg-secondary text-secondary-foreground hover:bg-secondary/90",
-                      "inline-flex items-center px-5 py-2 text-sm font-semibold tracking-wide uppercase",
+                      "inline-flex items-center rounded-[6px] px-5 py-2 text-sm font-semibold tracking-wide uppercase",
                       "transition-all duration-300",
-                      "hover:shadow-secondary/20 hover:shadow-lg",
+                      "hover:scale-[1.04] hover:shadow-[0_0_20px_rgba(200,119,34,0.45)] active:scale-[0.97]",
                       "focus-visible:outline-ring focus-visible:outline-2 focus-visible:outline-offset-2",
                     )}
                   >
@@ -137,9 +139,12 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
             })}
             <div className="bg-border ml-2 h-5 w-px" />
             <LocaleSwitcher />
+            <div className="bg-border h-5 w-px" />
+            <AnimatedThemeToggler />
           </nav>
 
           <div className="flex items-center gap-2 lg:hidden">
+            <AnimatedThemeToggler className="mr-2" />
             <LocaleSwitcher />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -179,7 +184,7 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
             "absolute top-full right-0 left-0",
             "bg-background border-border border-b",
             "origin-top transition-all duration-300 ease-in-out",
-            "px-4 md:px-6 xl:px-0",
+            "px-6",
             isMobileMenuOpen ? "visible max-h-screen opacity-100" : "invisible max-h-0 opacity-0",
           )}
         >
@@ -200,8 +205,8 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
                       rel={link.external ? "noopener noreferrer" : undefined}
                       className={cn(
                         "bg-secondary text-secondary-foreground hover:bg-secondary/90",
-                        "mt-2 flex items-center justify-center px-4 py-3 text-base font-semibold tracking-wide uppercase",
-                        "transition-colors duration-200 ease-out",
+                        "mt-2 flex items-center justify-center rounded-[6px] px-4 py-3 text-base font-semibold tracking-wide uppercase",
+                        "transition-all duration-200 ease-out",
                         "focus-visible:outline-ring focus-visible:outline-2 focus-visible:outline-offset-2",
                       )}
                     >

@@ -67,7 +67,7 @@ export default async function Layout({ children, params }: LayoutProps) {
 
   const [navigationData] = await Promise.all([getNavigationData(locale)]);
 
-  const navigationLinks = (navigationData?.navigation?.navigationLinks ?? []).map((link) => {
+  const sanityLinks = (navigationData?.navigation?.navigationLinks ?? []).map((link) => {
     // Strip locale prefix from href — next-intl's Link adds it automatically
     const rawHref = link.href ?? "";
     const href = rawHref.replace(/^\/(pl|en)(\/|$)/, "/");
@@ -79,6 +79,25 @@ export default async function Layout({ children, params }: LayoutProps) {
       external: link.external ?? false,
     };
   });
+
+  const fallbackLinks =
+    locale === "pl"
+      ? [
+          { label: "Usługi", href: "/#uslugi", external: false },
+          { label: "O nas", href: "/#o-nas", external: false },
+          { label: "Koparka", href: "/#koparka", external: false },
+          { label: "Galeria", href: "/#galeria", external: false },
+          { label: "Kontakt", href: "/#kontakt", external: false, isCtaButton: true },
+        ]
+      : [
+          { label: "Services", href: "/#uslugi", external: false },
+          { label: "About", href: "/#o-nas", external: false },
+          { label: "Excavator", href: "/#koparka", external: false },
+          { label: "Gallery", href: "/#galeria", external: false },
+          { label: "Contact", href: "/#kontakt", external: false, isCtaButton: true },
+        ];
+
+  const navigationLinks = sanityLinks.length > 0 ? sanityLinks : fallbackLinks;
 
   return (
     <SiteLayout>
