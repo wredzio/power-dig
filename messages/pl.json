@@ -1,0 +1,33 @@
+{
+  "common": {
+    "contact": "Kontakt",
+    "phone": "Telefon",
+    "address": "Adres",
+    "email": "Email",
+    "menu": "Menu",
+    "navigation": "Nawigacja",
+    "home": "Strona główna",
+    "allRightsReserved": "Wszelkie prawa zastrzeżone."
+  },
+  "localeSwitcher": {
+    "label": "Zmień język",
+    "pl": "PL",
+    "en": "EN"
+  },
+  "page": {
+    "notFound": "Strona nie znaleziona",
+    "setupTitle": "Core3",
+    "setupDescription": "Skonfiguruj projekt Sanity i utwórz stronę ze slugiem \"/\", aby rozpocząć.",
+    "envDescription": "Ustaw zmienne środowiskowe Sanity w .env.local, aby połączyć CMS."
+  },
+  "footer": {
+    "navigation": "Nawigacja",
+    "legal": "Informacje prawne"
+  },
+  "notFound": {
+    "title": "Strona nie istnieje",
+    "description": "Strona, której szukasz, nie istnieje lub została przeniesiona.",
+    "home": "Strona główna",
+    "contact": "Kontakt"
+  }
+}

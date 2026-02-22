@@ -1,0 +1,33 @@
+{
+  "common": {
+    "contact": "Contact",
+    "phone": "Phone",
+    "address": "Address",
+    "email": "Email",
+    "menu": "Menu",
+    "navigation": "Navigation",
+    "home": "Home",
+    "allRightsReserved": "All rights reserved."
+  },
+  "localeSwitcher": {
+    "label": "Change language",
+    "pl": "PL",
+    "en": "EN"
+  },
+  "page": {
+    "notFound": "Page not found",
+    "setupTitle": "Core3",
+    "setupDescription": "Configure your Sanity project and create a page with slug \"/\" to get started.",
+    "envDescription": "Set up your Sanity environment variables in .env.local to connect your CMS."
+  },
+  "footer": {
+    "navigation": "Navigation",
+    "legal": "Legal"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has been moved.",
+    "home": "Home",
+    "contact": "Contact"
+  }
+}
