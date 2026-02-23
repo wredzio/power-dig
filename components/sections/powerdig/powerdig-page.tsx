@@ -366,7 +366,6 @@ export function PowerDigPage() {
                   style={{
                     backgroundColor: "var(--pd-bg-card)",
                     borderRadius: 4,
-                    minHeight: 280,
                   }}
                 >
                   {/* Tag */}

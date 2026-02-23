@@ -383,7 +383,7 @@ export function ElectricBorder({
       </div>
 
       {/* Content */}
-      <div style={{ position: "relative", borderRadius: borderRadius, zIndex: 1 }}>
+      <div style={{ position: "relative", borderRadius: borderRadius, zIndex: 1, height: "100%" }}>
         {children}
       </div>
     </div>
