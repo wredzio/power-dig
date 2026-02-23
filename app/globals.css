@@ -94,6 +94,12 @@
 }
 
 @layer base {
+  html,
+  body {
+    overflow-x: clip;
+    scrollbar-gutter: stable;
+  }
+
   /* ─── PowerDig page theme tokens (dark default) ─── */
   :root {
     --pd-bg: #0A0A0A;

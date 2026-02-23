@@ -1,7 +1,7 @@
 "use client";
 
-import { useLocale } from "next-intl";
 import { ChevronDown, Cpu, Mail, Phone, Shovel, Wrench, Zap } from "lucide-react";
+import { useLocale } from "next-intl";
 
 import { ElectricBorder } from "@/components/ui/electric-border/electric-border";
 import { Lightning } from "@/components/ui/lightning/lightning";
@@ -328,7 +328,7 @@ export function PowerDigPage() {
       {/* ══════════════════════════════════════════════════════════════
           SERVICES SECTION
       ══════════════════════════════════════════════════════════════ */}
-      <section id="uslugi" className="px-6 py-24" style={{ backgroundColor: "var(--pd-bg)" }}>
+      <section id="uslugi" className="overflow-x-hidden px-6 py-24" style={{ backgroundColor: "var(--pd-bg)" }}>
         <div className="mx-auto max-w-6xl">
           {/* Section header */}
           <div className="mb-16 text-center">
