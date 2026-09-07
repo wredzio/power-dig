@@ -6,6 +6,7 @@ describe("SITE constants", () => {
   it("exposes the business card data", () => {
     expect(SITE.name).toBe("PowerDig Serwis Daniel Głogowski");
     expect(SITE.shortName).toBe("PowerDig Serwis");
+    expect(SITE.url).toBe("https://www.powerdig.pl");
     expect(SITE.phone).toBe("795704504");
     expect(SITE.email).toBe("powerdig.serwis@gmail.com");
   });
@@ -26,6 +27,17 @@ describe("resolveSiteUrl", () => {
     expect(
       resolveSiteUrl({ settingsUrl: "http://localhost:3000", envUrl: "https://example.com" }),
     ).toBe("https://example.com");
+  });
+
+  it("prefers the known production domain over the Vercel deployment host", () => {
+    expect(
+      resolveSiteUrl({
+        settingsUrl: "http://localhost:3000",
+        envUrl: null,
+        productionUrl: "https://www.powerdig.pl",
+        vercelUrl: "power-dig.vercel.app",
+      }),
+    ).toBe("https://www.powerdig.pl");
   });
 
   it("falls back to the Vercel deployment URL", () => {

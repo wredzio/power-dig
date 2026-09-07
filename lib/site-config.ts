@@ -8,6 +8,8 @@ import { routing } from "@/i18n/routing";
 export const SITE = {
   name: "PowerDig Serwis Daniel Głogowski",
   shortName: "PowerDig Serwis",
+  /** Production origin; overridden by Sanity settings or NEXT_PUBLIC_SITE_URL. */
+  url: "https://www.powerdig.pl",
   ownerName: "Daniel Głogowski",
   phone: "795704504",
   email: "powerdig.serwis@gmail.com",
@@ -21,6 +23,8 @@ const LOCALHOST_URL = "http://localhost:3000";
 interface ResolveSiteUrlInput {
   settingsUrl?: string | null;
   envUrl?: string | null;
+  /** Known production origin, preferred over the *.vercel.app deployment host. */
+  productionUrl?: string | null;
   vercelUrl?: string | null;
 }
 
@@ -38,14 +42,16 @@ function normaliseHttpUrl(candidate: string | null | undefined): string | null {
 
 /**
  * Picks the public site origin: CMS settings, then NEXT_PUBLIC_SITE_URL,
- * then the Vercel deployment host, then localhost. Localhost values in
- * CMS/env are ignored so a forgotten dev URL never leaks into production
- * canonicals.
+ * then the known production domain, then the Vercel deployment host, then
+ * localhost. Localhost values in CMS/env are ignored so a forgotten dev URL
+ * never leaks into production canonicals, and the *.vercel.app host is only
+ * used when no real domain is known.
  */
 export function resolveSiteUrl(input: ResolveSiteUrlInput): string {
   return (
     normaliseHttpUrl(input.settingsUrl) ??
     normaliseHttpUrl(input.envUrl) ??
+    normaliseHttpUrl(input.productionUrl) ??
     (input.vercelUrl ? normaliseHttpUrl(`https://${input.vercelUrl}`) : null) ??
     LOCALHOST_URL
   );
@@ -55,6 +61,7 @@ export function getSiteUrl(settingsUrl?: string | null): string {
   return resolveSiteUrl({
     settingsUrl,
     envUrl: process.env.NEXT_PUBLIC_SITE_URL,
+    productionUrl: SITE.url,
     vercelUrl: process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL,
   });
 }
