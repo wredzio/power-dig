@@ -77,12 +77,6 @@ export function PowerDigCertificates({
                 {item.title}
               </h3>
 
-              {(item.issuer || item.number) && (
-                <p className="mb-3 text-xs tracking-wider text-[var(--pd-text-dim)] uppercase">
-                  {[item.issuer, item.number].filter(Boolean).join(" · ")}
-                </p>
-              )}
-
               {item.description && (
                 <p className="text-sm leading-relaxed text-[var(--pd-text-muted)]">
                   {item.description}
