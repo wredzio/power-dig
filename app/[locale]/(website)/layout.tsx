@@ -1,63 +1,37 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 
 import { SiteLayout } from "@/components/layout/site-layout";
+import { buildLocalBusinessJsonLd } from "@/lib/seo/json-ld";
+import { getSiteUrl, OG_LOCALES, SITE } from "@/lib/site-config";
 import { getSettings } from "@/sanity/lib/get-settings";
 import { getNavigationData } from "@/sanity/sanity.client";
-import { urlForImage } from "@/sanity/schemas/image";
+import { urlForLogo } from "@/sanity/schemas/image";
 
 interface LayoutProps {
   children: ReactNode;
   params: Promise<{ locale: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
+const LOCALE_PREFIX = /^\/(pl|en)(\/|$)/;
+
+export async function generateMetadata({ params }: LayoutProps): Promise<Metadata> {
   const { locale } = await params;
   const settings = await getSettings(locale);
-
-  const ogLocale = locale === "pl" ? "pl_PL" : "en_US";
+  const siteUrl = getSiteUrl(settings?.url);
+  const title = settings?.title || SITE.shortName;
 
   return {
-    metadataBase: settings?.url ? new URL(settings.url) : null,
-    title: {
-      default: settings?.title ?? "Core3",
-      template: `%s | ${settings?.title ?? "Core3"}`,
-    },
-    description: settings?.description || "",
-    alternates: {
-      canonical: settings?.url
-        ? new URL(locale === "pl" ? settings.url : `${settings.url}/en`)
-        : null,
-      languages: {
-        pl: settings?.url ? settings.url : "/",
-        en: settings?.url ? `${settings.url}/en` : "/en",
-      },
-    },
-    keywords: settings?.keywords ?? [],
-    openGraph: {
-      title: settings?.title,
-      description: settings?.description,
-      url: settings?.url
-        ? locale === "pl"
-          ? settings.url
-          : `${settings.url}/en`
-        : undefined,
-      images: [
-        {
-          url: urlForImage(settings?.openGraphImage)?.src || "/og-default.jpg",
-          width: 800,
-          height: 600,
-        },
-      ],
-      locale: ogLocale,
-      alternateLocale: [locale === "pl" ? "en_US" : "pl_PL"],
-      type: "website",
-    },
+    metadataBase: new URL(siteUrl),
+    title: { default: title, template: `%s | ${title}` },
+    description: settings?.description ?? undefined,
+    applicationName: SITE.shortName,
+    keywords: settings?.keywords ?? undefined,
+    openGraph: { siteName: title, locale: OG_LOCALES[locale] ?? locale, type: "website" },
+    twitter: { card: "summary_large_image" },
   };
 }
 
@@ -65,45 +39,44 @@ export default async function Layout({ children, params }: LayoutProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [navigationData] = await Promise.all([getNavigationData(locale)]);
+  const [navigationData, settings] = await Promise.all([
+    getNavigationData(locale),
+    getSettings(locale),
+  ]);
 
-  const sanityLinks = (navigationData?.navigation?.navigationLinks ?? []).map((link) => {
-    // Strip locale prefix from href — next-intl's Link adds it automatically
-    const rawHref = link.href ?? "";
-    const href = rawHref.replace(/^\/(pl|en)(\/|$)/, "/");
-    const label = link.label ?? "";
-
-    return {
-      label,
-      href,
+  const navigationLinks = (navigationData?.navigation?.navigationLinks ?? [])
+    .filter((link) => link.label && link.href)
+    .map((link, index, all) => ({
+      label: link.label!,
+      // next-intl's Link adds the locale prefix itself.
+      href: link.href!.replace(LOCALE_PREFIX, "/"),
       external: link.external ?? false,
-    };
+      isCtaButton: index === all.length - 1,
+    }));
+
+  const jsonLd = buildLocalBusinessJsonLd({
+    name: settings?.title || SITE.name,
+    url: getSiteUrl(settings?.url),
+    phone: settings?.phone || SITE.phone,
+    email: settings?.mail || SITE.email,
+    description: settings?.description,
+    logoUrl: urlForLogo(settings?.logo) ?? `${getSiteUrl(settings?.url)}/icon.png`,
+    areaServed: settings?.areaServed || SITE.areaServed,
+    openingHours: settings?.openingHours,
+    locale,
   });
-
-  const fallbackLinks =
-    locale === "pl"
-      ? [
-          { label: "Usługi", href: "/#uslugi", external: false },
-          { label: "O nas", href: "/#o-nas", external: false },
-          { label: "Koparka", href: "/#koparka", external: false },
-          { label: "Galeria", href: "/#galeria", external: false },
-          { label: "Kontakt", href: "/#kontakt", external: false, isCtaButton: true },
-        ]
-      : [
-          { label: "Services", href: "/#uslugi", external: false },
-          { label: "About", href: "/#o-nas", external: false },
-          { label: "Excavator", href: "/#koparka", external: false },
-          { label: "Gallery", href: "/#galeria", external: false },
-          { label: "Contact", href: "/#kontakt", external: false, isCtaButton: true },
-        ];
-
-  const navigationLinks = sanityLinks.length > 0 ? sanityLinks : fallbackLinks;
 
   return (
     <SiteLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <SiteLayout.Header navigationLinks={navigationLinks} />
       <SiteLayout.Main>{children}</SiteLayout.Main>
       <SiteLayout.Footer />
+      <Analytics />
+      <SpeedInsights />
     </SiteLayout>
   );
 }

@@ -1,6 +1,6 @@
 {
-  "name": "u Szkota",
-  "short_name": "u Szkota",
+  "name": "PowerDig Serwis Daniel Głogowski",
+  "short_name": "PowerDig Serwis",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#181818",
-  "background_color": "#181818",
+  "theme_color": "#C87722",
+  "background_color": "#0A0A0A",
   "display": "standalone"
 }

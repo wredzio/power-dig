@@ -1,7 +1,10 @@
 import type { MetadataRoute } from "next";
 
+import { getSiteUrl } from "@/lib/site-config";
+
 export default function robots(): MetadataRoute.Robots {
   const isProd = process.env.VERCEL_ENV === "production";
+  const siteUrl = getSiteUrl();
 
   return {
     rules: [
@@ -10,6 +13,7 @@ export default function robots(): MetadataRoute.Robots {
         ...(isProd ? { allow: "/", disallow: ["/studio"] } : { disallow: "/" }),
       },
     ],
-    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL || "https://example.com"}/sitemap.xml`,
+    host: siteUrl,
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }

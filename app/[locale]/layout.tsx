@@ -1,6 +1,5 @@
 import "../globals.css";
 
-import type { Metadata } from "next";
 import { Heebo, Lato } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
@@ -23,15 +22,6 @@ const heebo = Heebo({
   weight: ["400", "700"],
   display: "swap",
 });
-
-export const metadata: Metadata = {
-  title: {
-    default: "PowerDig Serwis — Daniel Głogowski",
-    template: "%s | PowerDig Serwis",
-  },
-  description:
-    "PowerDig Serwis — instalacje elektryczne, serwis AGD, monitoring, smart home, usługi minikoparką. Tel: 795-704-504",
-};
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

@@ -1,0 +1,76 @@
+import { routing } from "@/i18n/routing";
+
+/**
+ * Business card data for PowerDig Serwis. Sanity settings override these
+ * at runtime; the constants are the last-resort fallback and the source
+ * for build-time artefacts (manifest, OG image, JSON-LD defaults).
+ */
+export const SITE = {
+  name: "PowerDig Serwis Daniel Głogowski",
+  shortName: "PowerDig Serwis",
+  ownerName: "Daniel Głogowski",
+  phone: "795704504",
+  email: "powerdig.serwis@gmail.com",
+  areaServed: "Małopolska",
+  brandColor: "#C87722",
+  backgroundColor: "#0A0A0A",
+} as const;
+
+const LOCALHOST_URL = "http://localhost:3000";
+
+interface ResolveSiteUrlInput {
+  settingsUrl?: string | null;
+  envUrl?: string | null;
+  vercelUrl?: string | null;
+}
+
+function normaliseHttpUrl(candidate: string | null | undefined): string | null {
+  if (!candidate) return null;
+  try {
+    const url = new URL(candidate);
+    if (!/^https?:$/.test(url.protocol)) return null;
+    if (url.hostname === "localhost" || url.hostname === "127.0.0.1") return null;
+    return url.origin;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Picks the public site origin: CMS settings, then NEXT_PUBLIC_SITE_URL,
+ * then the Vercel deployment host, then localhost. Localhost values in
+ * CMS/env are ignored so a forgotten dev URL never leaks into production
+ * canonicals.
+ */
+export function resolveSiteUrl(input: ResolveSiteUrlInput): string {
+  return (
+    normaliseHttpUrl(input.settingsUrl) ??
+    normaliseHttpUrl(input.envUrl) ??
+    (input.vercelUrl ? normaliseHttpUrl(`https://${input.vercelUrl}`) : null) ??
+    LOCALHOST_URL
+  );
+}
+
+export function getSiteUrl(settingsUrl?: string | null): string {
+  return resolveSiteUrl({
+    settingsUrl,
+    envUrl: process.env.NEXT_PUBLIC_SITE_URL,
+    vercelUrl: process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL,
+  });
+}
+
+/**
+ * Builds the public path for a page slug, honouring next-intl's
+ * `localePrefix: "as-needed"` (default locale has no prefix).
+ */
+export function localizedPath(locale: string, slug: string): string {
+  const trimmed = slug.replace(/^\/+|\/+$/g, "");
+  const prefix = locale === routing.defaultLocale ? "" : `/${locale}`;
+  if (!trimmed) return prefix || "/";
+  return `${prefix}/${trimmed}`;
+}
+
+export const OG_LOCALES: Record<string, string> = {
+  pl: "pl_PL",
+  en: "en_US",
+};
