@@ -9,6 +9,7 @@ import { faqSection } from "./sections/faq-section";
 import { gallerySection } from "./sections/gallery-section";
 import { heroSection } from "./sections/hero-section";
 import { imageSection } from "./sections/image-section";
+import { miniExcavatorSection } from "./sections/mini-excavator-section";
 import { servicesSection } from "./sections/services-section";
 import { subheadingSection } from "./sections/subheading-section";
 import { settingsType } from "./settings";
@@ -21,6 +22,7 @@ export const schemaTypes = [
   heroSection,
   servicesSection,
   aboutSection,
+  miniExcavatorSection,
   certificatesSection,
   gallerySection,
   faqSection,

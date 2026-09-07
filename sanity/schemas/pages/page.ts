@@ -97,6 +97,7 @@ export const pageType = defineType({
         { type: "heroSection" },
         { type: "servicesSection" },
         { type: "aboutSection" },
+        { type: "miniExcavatorSection" },
         { type: "certificatesSection" },
         { type: "gallerySection" },
         { type: "faqSection" },

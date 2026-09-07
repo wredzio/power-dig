@@ -40,6 +40,21 @@ describe("resolveSiteUrl", () => {
     ).toBe("https://www.powerdig.pl");
   });
 
+  it("does not let a *.vercel.app env URL beat the production domain", () => {
+    expect(
+      resolveSiteUrl({
+        envUrl: "https://power-dig.vercel.app",
+        productionUrl: "https://www.powerdig.pl",
+      }),
+    ).toBe("https://www.powerdig.pl");
+  });
+
+  it("still uses a *.vercel.app env URL when no production domain is known", () => {
+    expect(resolveSiteUrl({ envUrl: "https://power-dig.vercel.app" })).toBe(
+      "https://power-dig.vercel.app",
+    );
+  });
+
   it("falls back to the Vercel deployment URL", () => {
     expect(
       resolveSiteUrl({

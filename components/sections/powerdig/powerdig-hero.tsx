@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 
 import { LogoMark } from "@/components/ui/logo/logo-mark";
 import { ShinyText } from "@/components/ui/shiny-text/shiny-text";
+import { scrollToAnchor } from "@/lib/scroll-to-anchor";
 import { cn } from "@/lib/utils";
 
 import { BRAND_GOLD, BRAND_ORANGE, BRAND_SHINE, HEADING_FONT, withAlpha } from "./brand";
@@ -155,6 +156,9 @@ export function PowerDigHero({
           </a>
           <a
             href={ctaServicesHref}
+            onClick={(e) => {
+              if (scrollToAnchor(ctaServicesHref)) e.preventDefault();
+            }}
             className={cn(
               "group flex items-center justify-center gap-3 rounded-[6px] border px-8 py-4 text-sm font-bold tracking-widest uppercase",
               "border-[#C87722]/55 text-[var(--pd-text)] transition-all duration-300",

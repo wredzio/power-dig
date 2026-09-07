@@ -48,13 +48,24 @@ function normaliseHttpUrl(candidate: string | null | undefined): string | null {
  * used when no real domain is known.
  */
 export function resolveSiteUrl(input: ResolveSiteUrlInput): string {
+  const envUrl = normaliseHttpUrl(input.envUrl);
+  const productionUrl = normaliseHttpUrl(input.productionUrl);
+  // An env URL pointing at a *.vercel.app host is a deployment address, not
+  // the public domain; it must not beat a known production origin.
+  const envIsDeploymentHost = envUrl !== null && isVercelHost(envUrl);
+
   return (
     normaliseHttpUrl(input.settingsUrl) ??
-    normaliseHttpUrl(input.envUrl) ??
-    normaliseHttpUrl(input.productionUrl) ??
+    (envIsDeploymentHost ? null : envUrl) ??
+    productionUrl ??
+    envUrl ??
     (input.vercelUrl ? normaliseHttpUrl(`https://${input.vercelUrl}`) : null) ??
     LOCALHOST_URL
   );
+}
+
+function isVercelHost(origin: string): boolean {
+  return new URL(origin).hostname.endsWith(".vercel.app");
 }
 
 export function getSiteUrl(settingsUrl?: string | null): string {

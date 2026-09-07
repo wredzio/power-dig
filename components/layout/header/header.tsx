@@ -6,6 +6,7 @@ import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler/ani
 import { LocaleSwitcher } from "@/components/ui/locale-switcher/locale-switcher";
 import { Logo } from "@/components/ui/logo/logo";
 import { Link, usePathname } from "@/i18n/navigation";
+import { scrollToAnchor } from "@/lib/scroll-to-anchor";
 import { cn } from "@/lib/utils";
 
 export interface NavigationLink {
@@ -47,15 +48,7 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
 
   const handleLinkClick = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
     setMenuOpen(false);
-    if (!href.startsWith("#") && !href.startsWith("/#")) return;
-    e.preventDefault();
-    const id = href.replace(/^\/?#/, "");
-    const el = document.getElementById(id);
-    if (!el) return;
-    const top =
-      el.getBoundingClientRect().top + window.scrollY - (headerRef.current?.offsetHeight ?? 0);
-    window.scrollTo({ top, behavior: "smooth" });
-    window.history.pushState(null, "", href);
+    if (scrollToAnchor(href)) e.preventDefault();
   };
 
   return (

@@ -10,6 +10,7 @@ import { SanityFaqSection } from "./components/sanity-faq-section";
 import { SanityGallerySection } from "./components/sanity-gallery-section";
 import { SanityHeroSection } from "./components/sanity-hero-section";
 import { SanityImageSection } from "./components/sanity-image-section";
+import { SanityMiniExcavatorSection } from "./components/sanity-mini-excavator-section";
 import { SanityServicesSection } from "./components/sanity-services-section";
 import { SanitySubheadingSection } from "./components/sanity-subheading-section";
 
@@ -27,6 +28,7 @@ export const sanityPageComponents = {
   heroSection: SanityHeroSection,
   servicesSection: SanityServicesSection,
   aboutSection: SanityAboutSection,
+  miniExcavatorSection: SanityMiniExcavatorSection,
   certificatesSection: SanityCertificatesSection,
   gallerySection: SanityGallerySection,
   faqSection: SanityFaqSection,

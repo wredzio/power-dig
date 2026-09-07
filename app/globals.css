@@ -31,6 +31,10 @@
 
   /* Fonts */
   --font-sans: var(--font-lato), var(--font-heebo), system-ui, sans-serif;
+
+  /* Accordion (Radix) open/close */
+  --animate-accordion-down: accordion-down 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-accordion-up: accordion-up 0.24s cubic-bezier(0.4, 0, 0.6, 1);
 }
 
 /* Dark theme (default) — PowerDig Serwis brand */
@@ -102,11 +106,11 @@
 
   /* ─── PowerDig page theme tokens (dark default) ─── */
   :root {
-    --pd-bg: #0A0A0A;
+    --pd-bg: #0a0a0a;
     --pd-bg-card: #111111;
     --pd-bg-section: #0e0e0e;
     --pd-bg-accent: #1a0d00;
-    --pd-text: #F5F0E8;
+    --pd-text: #f5f0e8;
     --pd-text-muted: rgba(245, 240, 232, 0.6);
     --pd-text-dim: rgba(245, 240, 232, 0.3);
     --pd-border: rgba(200, 119, 34, 0.2);
@@ -115,11 +119,11 @@
 
   /* ─── PowerDig page theme tokens (light) ─── */
   .light {
-    --pd-bg: #F2EDE3;
-    --pd-bg-card: #FFFFFF;
-    --pd-bg-section: #EDE7DA;
-    --pd-bg-accent: #FDF5E8;
-    --pd-text: #1A1208;
+    --pd-bg: #f2ede3;
+    --pd-bg-card: #ffffff;
+    --pd-bg-section: #ede7da;
+    --pd-bg-accent: #fdf5e8;
+    --pd-text: #1a1208;
     --pd-text-muted: rgba(26, 18, 8, 0.6);
     --pd-text-dim: rgba(26, 18, 8, 0.35);
     --pd-border: rgba(200, 119, 34, 0.3);
@@ -145,10 +149,18 @@
 
 /* Hero vignette — theme-aware */
 .pd-hero-vignette {
-  background: radial-gradient(ellipse 80% 70% at 50% 50%, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.92) 100%);
+  background: radial-gradient(
+    ellipse 80% 70% at 50% 50%,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.92) 100%
+  );
 }
 .light .pd-hero-vignette {
-  background: radial-gradient(ellipse 80% 70% at 50% 50%, rgba(242, 237, 227, 0.4) 0%, rgba(242, 237, 227, 0.88) 100%);
+  background: radial-gradient(
+    ellipse 80% 70% at 50% 50%,
+    rgba(242, 237, 227, 0.4) 0%,
+    rgba(242, 237, 227, 0.88) 100%
+  );
 }
 
 /* Shiny text — CSS-only shine sweep (was a per-frame JS animation) */
@@ -174,6 +186,30 @@
   .pd-shiny {
     animation: none;
     background-position: 50% center;
+  }
+}
+
+/* Accordion — height comes from Radix, fade + lift added for a softer open */
+@keyframes accordion-down {
+  from {
+    height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
   }
 }
 
@@ -209,52 +245,52 @@
     ),
     /* Dark green wide bands — vertical */
     repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent 4px,
-      rgba(0, 56, 28, 0.55) 4px,
-      rgba(0, 56, 28, 0.55) 20px,
-      transparent 20px,
-      transparent 48px
-    ),
+        90deg,
+        transparent 0px,
+        transparent 4px,
+        rgba(0, 56, 28, 0.55) 4px,
+        rgba(0, 56, 28, 0.55) 20px,
+        transparent 20px,
+        transparent 48px
+      ),
     /* Navy accent — horizontal */
     repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 22px,
-      rgba(10, 25, 60, 0.45) 22px,
-      rgba(10, 25, 60, 0.45) 28px,
-      transparent 28px,
-      transparent 48px
-    ),
+        0deg,
+        transparent 0px,
+        transparent 22px,
+        rgba(10, 25, 60, 0.45) 22px,
+        rgba(10, 25, 60, 0.45) 28px,
+        transparent 28px,
+        transparent 48px
+      ),
     /* Navy accent — vertical */
     repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent 22px,
-      rgba(10, 25, 60, 0.45) 22px,
-      rgba(10, 25, 60, 0.45) 28px,
-      transparent 28px,
-      transparent 48px
-    ),
+        90deg,
+        transparent 0px,
+        transparent 22px,
+        rgba(10, 25, 60, 0.45) 22px,
+        rgba(10, 25, 60, 0.45) 28px,
+        transparent 28px,
+        transparent 48px
+      ),
     /* Gold thin stripes — horizontal */
     repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 2px,
-      rgba(173, 146, 113, 0.5) 2px,
-      rgba(173, 146, 113, 0.5) 4px,
-      transparent 4px,
-      transparent 48px
-    ),
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(173, 146, 113, 0.5) 2px,
+        rgba(173, 146, 113, 0.5) 4px,
+        transparent 4px,
+        transparent 48px
+      ),
     /* Gold thin stripes — vertical */
     repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent 2px,
-      rgba(173, 146, 113, 0.5) 2px,
-      rgba(173, 146, 113, 0.5) 4px,
-      transparent 4px,
-      transparent 48px
-    );
+        90deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(173, 146, 113, 0.5) 2px,
+        rgba(173, 146, 113, 0.5) 4px,
+        transparent 4px,
+        transparent 48px
+      );
 }
