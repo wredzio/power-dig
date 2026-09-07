@@ -100,9 +100,7 @@ export function PowerDigHero({
         </h1>
 
         {tagline && (
-          <p className="mb-2 max-w-xl text-lg font-light text-[var(--pd-text-muted)] md:text-xl">
-            {tagline}
-          </p>
+          <p className="mb-6 max-w-xl text-lg text-[var(--pd-text-muted)] md:text-xl">{tagline}</p>
         )}
 
         {serviceTags.length > 0 && (
@@ -110,7 +108,7 @@ export function PowerDigHero({
             {serviceTags.map((tag) => (
               <li
                 key={tag}
-                className="rounded-sm border px-3 py-1 text-xs font-semibold tracking-wider uppercase"
+                className="inline-flex items-center rounded-sm border px-3 pt-[7px] pb-[5px] text-xs leading-none font-semibold tracking-wider uppercase"
                 style={{
                   borderColor: withAlpha(BRAND_ORANGE, "66"),
                   color: BRAND_ORANGE,
