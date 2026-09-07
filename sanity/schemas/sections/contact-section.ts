@@ -1,23 +1,15 @@
 import { defineField, defineType } from "sanity";
 
+import { anchorIdField } from "../objects/anchor-id-field";
+import { CONTACT_ICON_OPTIONS } from "../objects/section-icon-options";
+
 export const contactSection = defineType({
   name: "contactSection",
   type: "object",
-  title: "Contact Section",
+  title: "Kontakt",
   fields: [
-    defineField({
-      name: "id",
-      type: "string",
-      title: "ID sekcji (anchor)",
-      validation: (Rule) =>
-        Rule.custom((value) => {
-          if (!value) return true;
-          if (!/^[a-z0-9-]+$/.test(value)) {
-            return "ID może zawierać tylko małe litery, cyfry i myślniki";
-          }
-          return true;
-        }),
-    }),
+    anchorIdField("kontakt"),
+    defineField({ name: "subtitle", type: "string", title: "Napis nad tytułem" }),
     defineField({
       name: "title",
       type: "string",
@@ -28,52 +20,50 @@ export const contactSection = defineType({
       name: "phone",
       type: "string",
       title: "Telefon",
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: "address",
-      type: "string",
-      title: "Adres",
-      validation: (Rule) => Rule.required(),
+      description: "Puste = numer z ustawień strony",
     }),
     defineField({
       name: "email",
       type: "string",
-      title: "Email",
-      validation: (Rule) => Rule.required().email(),
+      title: "E-mail",
+      description: "Puste = e-mail z ustawień strony",
+      validation: (Rule) => Rule.email(),
     }),
-    defineField({
-      name: "subtitle",
-      type: "string",
-      title: "Podtytuł",
-      description: "Opcjonalny tekst pod tytułem sekcji",
-    }),
+    defineField({ name: "address", type: "string", title: "Obszar działania / adres" }),
     defineField({
       name: "hours",
       type: "array",
-      title: "Godziny otwarcia",
+      title: "Karty informacyjne",
+      description: "Trzy krótkie karty pod danymi kontaktowymi",
       of: [
         {
           type: "object",
+          name: "contactCard",
           fields: [
+            defineField({
+              name: "icon",
+              type: "string",
+              title: "Ikona",
+              options: { list: [...CONTACT_ICON_OPTIONS] },
+            }),
             defineField({
               name: "days",
               type: "string",
-              title: "Dni (np. Pn-Czw)",
+              title: "Tytuł karty",
               validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: "time",
               type: "string",
-              title: "Godziny (np. 17:00–01:00)",
+              title: "Treść karty",
               validation: (Rule) => Rule.required(),
             }),
           ],
-          preview: {
-            select: { title: "days", subtitle: "time" },
-          },
+          preview: { select: { title: "days", subtitle: "time" } },
         },
       ],
+      validation: (Rule) => Rule.max(3),
     }),
   ],
+  preview: { select: { title: "title" } },
 });

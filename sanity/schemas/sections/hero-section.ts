@@ -1,61 +1,61 @@
 import { defineField, defineType } from "sanity";
 
+import { anchorIdField } from "../objects/anchor-id-field";
+
 export const heroSection = defineType({
   name: "heroSection",
   type: "object",
-  title: "Hero Section",
+  title: "Hero",
   fields: [
-    defineField({
-      name: "title",
-      type: "string",
-      title: "Tytuł",
-      validation: (Rule) => Rule.required(),
-    }),
+    anchorIdField("hero"),
     defineField({
       name: "supra",
       type: "string",
-      title: "Napis nad tytułem (supra)",
-      description: "Złoty napis wyświetlany nad głównym tytułem",
+      title: "Imię i nazwisko właściciela",
+      description: "Napis obok logo nad tytułem (np. „Daniel Głogowski”)",
+    }),
+    defineField({
+      name: "subtitle",
+      type: "string",
+      title: "Tytuł zawodowy",
+      description: "Pod imieniem i nazwiskiem (np. „Autoryzowany technik”)",
+    }),
+    defineField({
+      name: "title",
+      type: "string",
+      title: "Nagłówek H1",
+      description:
+        "Pierwsze słowo trafia do górnej linii, reszta do dolnej (np. „PowerDig Serwis”)",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "description",
       type: "text",
-      title: "Opis",
-      rows: 4,
+      title: "Hasło (tagline)",
+      rows: 2,
+    }),
+    defineField({
+      name: "tags",
+      type: "array",
+      title: "Etykiety usług",
+      description: "Krótkie plakietki pod hasłem (np. „Instalacje”, „Serwis AGD”)",
+      of: [{ type: "string" }],
+      options: { layout: "tags" },
+      validation: (Rule) => Rule.max(6),
     }),
     defineField({
       name: "ctaLabel",
       type: "string",
-      title: "CTA Button Label",
-      description: "Tekst przycisku CTA (opcjonalny)",
+      title: "Tekst przycisku „Nasze usługi”",
     }),
     defineField({
       name: "ctaHref",
       type: "string",
-      title: "CTA Button Link",
-      description: "Link przycisku CTA",
-    }),
-    defineField({
-      name: "backgroundImage",
-      type: "image",
-      title: "Obraz tła",
-      options: { hotspot: true },
-      fields: [
-        defineField({
-          name: "alt",
-          type: "string",
-          title: "Tekst alternatywny",
-          validation: (Rule) => Rule.required(),
-        }),
-      ],
-    }),
-    defineField({
-      name: "overlayOpacity",
-      type: "number",
-      title: "Przezroczystość nakładki",
-      description: "Wartość od 0 (brak nakładki) do 100 (pełne przyciemnienie)",
-      initialValue: 60,
-      validation: (Rule) => Rule.min(0).max(100),
+      title: "Link przycisku",
+      description: "Np. #uslugi",
     }),
   ],
+  preview: {
+    select: { title: "title", subtitle: "supra" },
+  },
 });

@@ -1,5 +1,7 @@
 import { defineQuery } from "next-sanity";
 
+const IMAGE_ASSET = `asset->{ _id, url, metadata { lqip, dimensions } }`;
+
 export const pageQuery =
   defineQuery(`*[_type == "page" && slug.current == $slug && (language == $language || !defined(language))][0]{
   _id,
@@ -9,56 +11,138 @@ export const pageQuery =
   _rev,
   title,
   slug,
+  language,
   metadata{
     metaTitle,
     metaDescription,
     keywords,
     ogImage{
       ...,
-      asset->
+      ${IMAGE_ASSET}
     },
     noIndex
   },
   sections[]{
     _key,
     _type,
-    ...,
-    // Hero section - background image with metadata
-    backgroundImage{
-      ...,
-      asset->{ _id, url, metadata { lqip, dimensions } }
+    _type == "heroSection" => {
+      id,
+      supra,
+      subtitle,
+      title,
+      description,
+      tags,
+      ctaLabel,
+      ctaHref,
     },
-    // About section - features
-    features[]{
-      ...,
-    },
-    // FAQ section - items
-    items[]{
-      ...,
-    },
-    // Image section - responsive image with metadata
-    image{
-      ...,
-      image{
-        ...,
-        asset->{ _id, url, metadata { lqip, dimensions } }
+    _type == "servicesSection" => {
+      id,
+      supra,
+      title,
+      subtitle,
+      services[]{
+        _key,
+        icon,
+        tag,
+        title,
+        description,
+        details,
+        note,
       },
-      aspectRatio
     },
-    // Rich text body
-    body[]{
-      ...,
-      _type == 'image' => {
-        ...,
-        asset->{ _id, url, metadata { lqip, dimensions } }
-      }
-    },
-    // Divider section - optional pattern/texture image
-    _type == 'dividerSection' => {
+    _type == "aboutSection" => {
+      id,
+      supra,
+      title,
+      description,
+      features[]{ _key, title, description },
       image{
         ...,
-        asset->{ _id, url, metadata { lqip, dimensions } }
-      }
+        ${IMAGE_ASSET}
+      },
+      ownerName,
+      ownerTitle,
+      imagePlaceholder,
+    },
+    _type == "certificatesSection" => {
+      id,
+      supra,
+      title,
+      subtitle,
+      items[]{
+        _key,
+        title,
+        issuer,
+        number,
+        validUntil,
+        description,
+        image{
+          ...,
+          ${IMAGE_ASSET}
+        },
+      },
+      footnote,
+    },
+    _type == "gallerySection" => {
+      id,
+      supra,
+      title,
+      subtitle,
+      images[]{
+        _key,
+        alt,
+        caption,
+        category,
+        image{
+          ...,
+          ${IMAGE_ASSET}
+        },
+      },
+      footnote,
+    },
+    _type == "faqSection" => {
+      id,
+      supra,
+      title,
+      subtitle,
+      items[]{ _key, question, answer },
+    },
+    _type == "contactSection" => {
+      id,
+      subtitle,
+      title,
+      phone,
+      email,
+      address,
+      hours[]{ _key, icon, days, time },
+    },
+    _type == "imageSection" => {
+      ...,
+      image{
+        ...,
+        image{
+          ...,
+          ${IMAGE_ASSET}
+        },
+        aspectRatio
+      },
+      body[]{
+        ...,
+        _type == "image" => {
+          ...,
+          ${IMAGE_ASSET}
+        }
+      },
+    },
+    _type == "subheadingSection" => {
+      ...,
+    },
+    _type == "dividerSection" => {
+      ...,
+      image{
+        ...,
+        ${IMAGE_ASSET}
+      },
     },
   }
 }`);

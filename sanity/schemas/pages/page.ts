@@ -95,7 +95,10 @@ export const pageType = defineType({
       title: "Sekcje",
       of: [
         { type: "heroSection" },
+        { type: "servicesSection" },
         { type: "aboutSection" },
+        { type: "certificatesSection" },
+        { type: "gallerySection" },
         { type: "faqSection" },
         { type: "contactSection" },
         { type: "imageSection" },

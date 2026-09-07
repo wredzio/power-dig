@@ -20,6 +20,23 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
+export type CertificateImage = {
+  asset?: SanityImageAssetReference;
+  media?: unknown; // Unable to locate the referenced type "certificate.image.media" in schema
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  alt?: string;
+  _type: "image";
+};
+
+export type GalleryImageImage = {
+  asset?: SanityImageAssetReference;
+  media?: unknown; // Unable to locate the referenced type "galleryImage.image.media" in schema
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  _type: "image";
+};
+
 export type DividerSection = {
   _type: "dividerSection";
   style?: "tartan" | "solid" | "line";
@@ -51,14 +68,16 @@ export type ImageSection = {
 export type ContactSection = {
   _type: "contactSection";
   id?: string;
+  subtitle?: string;
   title?: string;
   phone?: string;
-  address?: string;
   email?: string;
-  subtitle?: string;
+  address?: string;
   hours?: Array<{
+    icon?: "Phone" | "Zap" | "Mail" | "Clock" | "MapPin";
     days?: string;
     time?: string;
+    _type: "contactCard";
     _key: string;
   }>;
 };
@@ -66,36 +85,66 @@ export type ContactSection = {
 export type FaqSection = {
   _type: "faqSection";
   id?: string;
+  supra?: string;
   title?: string;
   subtitle?: string;
   items?: Array<{
     question?: string;
     answer?: string;
+    _type: "faqItem";
     _key: string;
   }>;
+};
+
+export type GallerySection = {
+  _type: "gallerySection";
+  id?: string;
+  supra?: string;
+  title?: string;
+  subtitle?: string;
+  images?: Array<{
+    image?: GalleryImageImage;
+    alt?: string;
+    caption?: string;
+    category?: string;
+    _type: "galleryImage";
+    _key: string;
+  }>;
+  footnote?: string;
+};
+
+export type CertificatesSection = {
+  _type: "certificatesSection";
+  id?: string;
+  supra?: string;
+  title?: string;
+  subtitle?: string;
+  items?: Array<{
+    title?: string;
+    issuer?: string;
+    number?: string;
+    validUntil?: string;
+    description?: string;
+    image?: CertificateImage;
+    _type: "certificate";
+    _key: string;
+  }>;
+  footnote?: string;
 };
 
 export type AboutSection = {
   _type: "aboutSection";
   id?: string;
+  supra?: string;
   title?: string;
   description?: string;
   features?: Array<{
-    icon?: string;
     title?: string;
     description?: string;
+    _type: "stat";
     _key: string;
   }>;
-};
-
-export type HeroSection = {
-  _type: "heroSection";
-  title?: string;
-  supra?: string;
-  description?: string;
-  ctaLabel?: string;
-  ctaHref?: string;
-  backgroundImage?: {
+  image?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
@@ -103,7 +152,54 @@ export type HeroSection = {
     alt?: string;
     _type: "image";
   };
-  overlayOpacity?: number;
+  ownerName?: string;
+  ownerTitle?: string;
+  imagePlaceholder?: string;
+};
+
+export type ServicesSection = {
+  _type: "servicesSection";
+  id?: string;
+  supra?: string;
+  title?: string;
+  subtitle?: string;
+  services?: Array<{
+    icon?:
+      | "Zap"
+      | "Wrench"
+      | "Gauge"
+      | "WashingMachine"
+      | "CircuitBoard"
+      | "Cctv"
+      | "DoorOpen"
+      | "House"
+      | "PanelTop"
+      | "Plug"
+      | "Cable"
+      | "Lightbulb"
+      | "ShieldCheck"
+      | "Cpu"
+      | "Award";
+    tag?: string;
+    title?: string;
+    description?: string;
+    details?: Array<string>;
+    note?: string;
+    _type: "service";
+    _key: string;
+  }>;
+};
+
+export type HeroSection = {
+  _type: "heroSection";
+  id?: string;
+  supra?: string;
+  subtitle?: string;
+  title?: string;
+  description?: string;
+  tags?: Array<string>;
+  ctaLabel?: string;
+  ctaHref?: string;
 };
 
 export type BlockContentSection = Array<
@@ -226,11 +322,6 @@ export type Settings = {
     href?: string;
     _key: string;
   }>;
-  footerGalleryImages?: Array<
-    {
-      _key: string;
-    } & ResponsiveImage
-  >;
   description?: string;
   keywords?: Array<string>;
   openGraphImage?: {
@@ -240,6 +331,14 @@ export type Settings = {
     crop?: SanityImageCrop;
     _type: "image";
   };
+  logo?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  areaServed?: string;
 };
 
 export type SanityImageCrop = {
@@ -287,7 +386,16 @@ export type Page = {
       } & HeroSection)
     | ({
         _key: string;
+      } & ServicesSection)
+    | ({
+        _key: string;
       } & AboutSection)
+    | ({
+        _key: string;
+      } & CertificatesSection)
+    | ({
+        _key: string;
+      } & GallerySection)
     | ({
         _key: string;
       } & FaqSection)
@@ -411,12 +519,17 @@ export type Geopoint = {
 
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
+  | CertificateImage
+  | GalleryImageImage
   | DividerSection
   | SubheadingSection
   | ImageSection
   | ContactSection
   | FaqSection
+  | GallerySection
+  | CertificatesSection
   | AboutSection
+  | ServicesSection
   | HeroSection
   | BlockContentSection
   | ResponsiveImage
@@ -443,7 +556,7 @@ export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: sanity/schemas/pages/page.queries.ts
 // Variable: pageQuery
-// Query: *[_type == "page" && slug.current == $slug && (language == $language || !defined(language))][0]{  _id,  _type,  _createdAt,  _updatedAt,  _rev,  title,  slug,  metadata{    metaTitle,    metaDescription,    keywords,    ogImage{      ...,      asset->    },    noIndex  },  sections[]{    _key,    _type,    ...,    // Hero section - background image with metadata    backgroundImage{      ...,      asset->{ _id, url, metadata { lqip, dimensions } }    },    // About section - features    features[]{      ...,    },    // FAQ section - items    items[]{      ...,    },    // Image section - responsive image with metadata    image{      ...,      image{        ...,        asset->{ _id, url, metadata { lqip, dimensions } }      },      aspectRatio    },    // Rich text body    body[]{      ...,      _type == 'image' => {        ...,        asset->{ _id, url, metadata { lqip, dimensions } }      }    },    // Divider section - optional pattern/texture image    _type == 'dividerSection' => {      image{        ...,        asset->{ _id, url, metadata { lqip, dimensions } }      }    },  }}
+// Query: *[_type == "page" && slug.current == $slug && (language == $language || !defined(language))][0]{  _id,  _type,  _createdAt,  _updatedAt,  _rev,  title,  slug,  language,  metadata{    metaTitle,    metaDescription,    keywords,    ogImage{      ...,      asset->{ _id, url, metadata { lqip, dimensions } }    },    noIndex  },  sections[]{    _key,    _type,    _type == "heroSection" => {      id,      supra,      subtitle,      title,      description,      tags,      ctaLabel,      ctaHref,    },    _type == "servicesSection" => {      id,      supra,      title,      subtitle,      services[]{        _key,        icon,        tag,        title,        description,        details,        note,      },    },    _type == "aboutSection" => {      id,      supra,      title,      description,      features[]{ _key, title, description },      image{        ...,        asset->{ _id, url, metadata { lqip, dimensions } }      },      ownerName,      ownerTitle,      imagePlaceholder,    },    _type == "certificatesSection" => {      id,      supra,      title,      subtitle,      items[]{        _key,        title,        issuer,        number,        validUntil,        description,        image{          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        },      },      footnote,    },    _type == "gallerySection" => {      id,      supra,      title,      subtitle,      images[]{        _key,        alt,        caption,        category,        image{          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        },      },      footnote,    },    _type == "faqSection" => {      id,      supra,      title,      subtitle,      items[]{ _key, question, answer },    },    _type == "contactSection" => {      id,      subtitle,      title,      phone,      email,      address,      hours[]{ _key, icon, days, time },    },    _type == "imageSection" => {      ...,      image{        ...,        image{          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        },        aspectRatio      },      body[]{        ...,        _type == "image" => {          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        }      },    },    _type == "subheadingSection" => {      ...,    },    _type == "dividerSection" => {      ...,      image{        ...,        asset->{ _id, url, metadata { lqip, dimensions } }      },    },  }}
 export type PageQueryResult = {
   _id: string;
   _type: "page";
@@ -452,6 +565,7 @@ export type PageQueryResult = {
   _rev: string;
   title: string | null;
   slug: Slug | null;
+  language: string | null;
   metadata: {
     metaTitle: string | null;
     metaDescription: string | null;
@@ -459,25 +573,11 @@ export type PageQueryResult = {
     ogImage: {
       asset: {
         _id: string;
-        _type: "sanity.imageAsset";
-        _createdAt: string;
-        _updatedAt: string;
-        _rev: string;
-        originalFilename?: string;
-        label?: string;
-        title?: string;
-        description?: string;
-        altText?: string;
-        sha1hash?: string;
-        extension?: string;
-        mimeType?: string;
-        size?: number;
-        assetId?: string;
-        uploadId?: string;
-        path?: string;
-        url?: string;
-        metadata?: SanityImageMetadata;
-        source?: SanityAssetSourceData;
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: SanityImageDimensions | null;
+        } | null;
       } | null;
       media?: unknown;
       hotspot?: SanityImageHotspot;
@@ -491,39 +591,81 @@ export type PageQueryResult = {
     | {
         _key: string;
         _type: "aboutSection";
-        id?: string;
-        title?: string;
-        description?: string;
+        id: string | null;
+        supra: string | null;
+        title: string | null;
+        description: string | null;
         features: Array<{
-          icon?: string;
-          title?: string;
-          description?: string;
           _key: string;
+          title: string | null;
+          description: string | null;
         }> | null;
-        backgroundImage: null;
-        items: null;
-        image: null;
-        body: null;
+        image: {
+          asset: {
+            _id: string;
+            url: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: SanityImageDimensions | null;
+            } | null;
+          } | null;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+        } | null;
+        ownerName: string | null;
+        ownerTitle: string | null;
+        imagePlaceholder: string | null;
+      }
+    | {
+        _key: string;
+        _type: "certificatesSection";
+        id: string | null;
+        supra: string | null;
+        title: string | null;
+        subtitle: string | null;
+        items: Array<{
+          _key: string;
+          title: string | null;
+          issuer: string | null;
+          number: string | null;
+          validUntil: string | null;
+          description: string | null;
+          image: {
+            asset: {
+              _id: string;
+              url: string | null;
+              metadata: {
+                lqip: string | null;
+                dimensions: SanityImageDimensions | null;
+              } | null;
+            } | null;
+            media?: unknown; // Unable to locate the referenced type "certificate.image.media" in schema
+            hotspot?: SanityImageHotspot;
+            crop?: SanityImageCrop;
+            alt?: string;
+            _type: "image";
+          } | null;
+        }> | null;
+        footnote: string | null;
       }
     | {
         _key: string;
         _type: "contactSection";
-        id?: string;
-        title?: string;
-        phone?: string;
-        address?: string;
-        email?: string;
-        subtitle?: string;
-        hours?: Array<{
-          days?: string;
-          time?: string;
+        id: string | null;
+        subtitle: string | null;
+        title: string | null;
+        phone: string | null;
+        email: string | null;
+        address: string | null;
+        hours: Array<{
           _key: string;
-        }>;
-        backgroundImage: null;
-        features: null;
-        items: null;
-        image: null;
-        body: null;
+          icon: "Clock" | "Mail" | "MapPin" | "Phone" | "Zap" | null;
+          days: string | null;
+          time: string | null;
+        }> | null;
       }
     | {
         _key: string;
@@ -544,55 +686,60 @@ export type PageQueryResult = {
           _type: "image";
         } | null;
         height?: "lg" | "md" | "sm";
-        backgroundImage: null;
-        features: null;
-        items: null;
-        body: null;
       }
     | {
         _key: string;
         _type: "faqSection";
-        id?: string;
-        title?: string;
-        subtitle?: string;
+        id: string | null;
+        supra: string | null;
+        title: string | null;
+        subtitle: string | null;
         items: Array<{
-          question?: string;
-          answer?: string;
           _key: string;
+          question: string | null;
+          answer: string | null;
         }> | null;
-        backgroundImage: null;
-        features: null;
-        image: null;
-        body: null;
+      }
+    | {
+        _key: string;
+        _type: "gallerySection";
+        id: string | null;
+        supra: string | null;
+        title: string | null;
+        subtitle: string | null;
+        images: Array<{
+          _key: string;
+          alt: string | null;
+          caption: string | null;
+          category: string | null;
+          image: {
+            asset: {
+              _id: string;
+              url: string | null;
+              metadata: {
+                lqip: string | null;
+                dimensions: SanityImageDimensions | null;
+              } | null;
+            } | null;
+            media?: unknown; // Unable to locate the referenced type "galleryImage.image.media" in schema
+            hotspot?: SanityImageHotspot;
+            crop?: SanityImageCrop;
+            _type: "image";
+          } | null;
+        }> | null;
+        footnote: string | null;
       }
     | {
         _key: string;
         _type: "heroSection";
-        title?: string;
-        supra?: string;
-        description?: string;
-        ctaLabel?: string;
-        ctaHref?: string;
-        backgroundImage: {
-          asset: {
-            _id: string;
-            url: string | null;
-            metadata: {
-              lqip: string | null;
-              dimensions: SanityImageDimensions | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: "image";
-        } | null;
-        overlayOpacity?: number;
-        features: null;
-        items: null;
-        image: null;
-        body: null;
+        id: string | null;
+        supra: string | null;
+        subtitle: string | null;
+        title: string | null;
+        description: string | null;
+        tags: Array<string> | null;
+        ctaLabel: string | null;
+        ctaHref: string | null;
       }
     | {
         _key: string;
@@ -655,20 +802,45 @@ export type PageQueryResult = {
         } | null;
         layout?: "left" | "right";
         fullWidth?: boolean;
-        backgroundImage: null;
-        features: null;
-        items: null;
+      }
+    | {
+        _key: string;
+        _type: "servicesSection";
+        id: string | null;
+        supra: string | null;
+        title: string | null;
+        subtitle: string | null;
+        services: Array<{
+          _key: string;
+          icon:
+            | "Award"
+            | "Cable"
+            | "Cctv"
+            | "CircuitBoard"
+            | "Cpu"
+            | "DoorOpen"
+            | "Gauge"
+            | "House"
+            | "Lightbulb"
+            | "PanelTop"
+            | "Plug"
+            | "ShieldCheck"
+            | "WashingMachine"
+            | "Wrench"
+            | "Zap"
+            | null;
+          tag: string | null;
+          title: string | null;
+          description: string | null;
+          details: Array<string> | null;
+          note: string | null;
+        }> | null;
       }
     | {
         _key: string;
         _type: "subheadingSection";
         id?: string;
         text?: string;
-        backgroundImage: null;
-        features: null;
-        items: null;
-        image: null;
-        body: null;
       }
   > | null;
 } | null;
@@ -699,13 +871,15 @@ export type NavigationQueryResult = {
 
 // Source: sanity/schemas/settings.queries.ts
 // Variable: settingsQuery
-// Query: *[_type == "settings" && (language == $language || !defined(language))][0] {    _id,    title,    description,    keywords,    url,    phone,    address,    mail,    social,    tagline,    openingHours[]{      _key,      days,      time    },    footerNavLinks[]{      _key,      label,      href    },    footerNavLegalLinks[]{      _key,      label,      href    },    footerGalleryImages[]{      _key,      image{        ...,        asset->{ _id, url, metadata{ lqip, dimensions } }      },      aspectRatio    }  }
+// Query: *[_type == "settings" && (language == $language || !defined(language))][0] {    _id,    language,    title,    description,    keywords,    url,    areaServed,    phone,    address,    mail,    social,    tagline,    openingHours[]{      _key,      days,      time    },    footerNavLinks[]{      _key,      label,      href    },    footerNavLegalLinks[]{      _key,      label,      href    },    logo{      ...,      asset->{ _id, url, metadata{ lqip, dimensions } }    },    openGraphImage{      ...,      asset->{ _id, url, metadata{ lqip, dimensions } }    }  }
 export type SettingsQueryResult = {
   _id: string;
+  language: string | null;
   title: string | null;
   description: string | null;
   keywords: Array<string> | null;
   url: string | null;
+  areaServed: string | null;
   phone: string | null;
   address: string | null;
   mail: string | null;
@@ -730,34 +904,43 @@ export type SettingsQueryResult = {
     label: string | null;
     href: string | null;
   }> | null;
-  footerGalleryImages: Array<{
-    _key: string;
-    image: {
-      asset: {
-        _id: string;
-        url: string | null;
-        metadata: {
-          lqip: string | null;
-          dimensions: SanityImageDimensions | null;
-        } | null;
+  logo: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: SanityImageDimensions | null;
       } | null;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
     } | null;
-    aspectRatio: "1/1" | "16/9" | "3/2" | "3/4" | "4/3" | "9/16" | null;
-  }> | null;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  openGraphImage: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: SanityImageDimensions | null;
+      } | null;
+    } | null;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
 } | null;
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"page\" && slug.current == $slug && (language == $language || !defined(language))][0]{\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  _rev,\n  title,\n  slug,\n  metadata{\n    metaTitle,\n    metaDescription,\n    keywords,\n    ogImage{\n      ...,\n      asset->\n    },\n    noIndex\n  },\n  sections[]{\n    _key,\n    _type,\n    ...,\n    // Hero section - background image with metadata\n    backgroundImage{\n      ...,\n      asset->{ _id, url, metadata { lqip, dimensions } }\n    },\n    // About section - features\n    features[]{\n      ...,\n    },\n    // FAQ section - items\n    items[]{\n      ...,\n    },\n    // Image section - responsive image with metadata\n    image{\n      ...,\n      image{\n        ...,\n        asset->{ _id, url, metadata { lqip, dimensions } }\n      },\n      aspectRatio\n    },\n    // Rich text body\n    body[]{\n      ...,\n      _type == 'image' => {\n        ...,\n        asset->{ _id, url, metadata { lqip, dimensions } }\n      }\n    },\n    // Divider section - optional pattern/texture image\n    _type == 'dividerSection' => {\n      image{\n        ...,\n        asset->{ _id, url, metadata { lqip, dimensions } }\n      }\n    },\n  }\n}": PageQueryResult;
+    '*[_type == "page" && slug.current == $slug && (language == $language || !defined(language))][0]{\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  _rev,\n  title,\n  slug,\n  language,\n  metadata{\n    metaTitle,\n    metaDescription,\n    keywords,\n    ogImage{\n      ...,\n      asset->{ _id, url, metadata { lqip, dimensions } }\n    },\n    noIndex\n  },\n  sections[]{\n    _key,\n    _type,\n    _type == "heroSection" => {\n      id,\n      supra,\n      subtitle,\n      title,\n      description,\n      tags,\n      ctaLabel,\n      ctaHref,\n    },\n    _type == "servicesSection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      services[]{\n        _key,\n        icon,\n        tag,\n        title,\n        description,\n        details,\n        note,\n      },\n    },\n    _type == "aboutSection" => {\n      id,\n      supra,\n      title,\n      description,\n      features[]{ _key, title, description },\n      image{\n        ...,\n        asset->{ _id, url, metadata { lqip, dimensions } }\n      },\n      ownerName,\n      ownerTitle,\n      imagePlaceholder,\n    },\n    _type == "certificatesSection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      items[]{\n        _key,\n        title,\n        issuer,\n        number,\n        validUntil,\n        description,\n        image{\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        },\n      },\n      footnote,\n    },\n    _type == "gallerySection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      images[]{\n        _key,\n        alt,\n        caption,\n        category,\n        image{\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        },\n      },\n      footnote,\n    },\n    _type == "faqSection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      items[]{ _key, question, answer },\n    },\n    _type == "contactSection" => {\n      id,\n      subtitle,\n      title,\n      phone,\n      email,\n      address,\n      hours[]{ _key, icon, days, time },\n    },\n    _type == "imageSection" => {\n      ...,\n      image{\n        ...,\n        image{\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        },\n        aspectRatio\n      },\n      body[]{\n        ...,\n        _type == "image" => {\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        }\n      },\n    },\n    _type == "subheadingSection" => {\n      ...,\n    },\n    _type == "dividerSection" => {\n      ...,\n      image{\n        ...,\n        asset->{ _id, url, metadata { lqip, dimensions } }\n      },\n    },\n  }\n}': PageQueryResult;
     '*[_type == "page" && (language == $language || !defined(language))]{\n  _id,\n  title,\n  slug\n}': AllPagesQueryResult;
     '*[_type == "settings" && (language == $language || !defined(language))][0]{\n  _id,\n  navigation{\n    navigationLinks[]{\n      label,\n      href,\n      external,\n      order\n    } | order(order asc)\n  }\n}': NavigationQueryResult;
-    '\n  *[_type == "settings" && (language == $language || !defined(language))][0] {\n    _id,\n    title,\n    description,\n    keywords,\n    url,\n    phone,\n    address,\n    mail,\n    social,\n    tagline,\n    openingHours[]{\n      _key,\n      days,\n      time\n    },\n    footerNavLinks[]{\n      _key,\n      label,\n      href\n    },\n    footerNavLegalLinks[]{\n      _key,\n      label,\n      href\n    },\n    footerGalleryImages[]{\n      _key,\n      image{\n        ...,\n        asset->{ _id, url, metadata{ lqip, dimensions } }\n      },\n      aspectRatio\n    }\n  }\n': SettingsQueryResult;
+    '\n  *[_type == "settings" && (language == $language || !defined(language))][0] {\n    _id,\n    language,\n    title,\n    description,\n    keywords,\n    url,\n    areaServed,\n    phone,\n    address,\n    mail,\n    social,\n    tagline,\n    openingHours[]{\n      _key,\n      days,\n      time\n    },\n    footerNavLinks[]{\n      _key,\n      label,\n      href\n    },\n    footerNavLegalLinks[]{\n      _key,\n      label,\n      href\n    },\n    logo{\n      ...,\n      asset->{ _id, url, metadata{ lqip, dimensions } }\n    },\n    openGraphImage{\n      ...,\n      asset->{ _id, url, metadata{ lqip, dimensions } }\n    }\n  }\n': SettingsQueryResult;
   }
 }

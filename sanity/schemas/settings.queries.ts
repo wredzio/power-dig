@@ -16,10 +16,12 @@ export const navigationQuery =
 export const settingsQuery = defineQuery(`
   *[_type == "settings" && (language == $language || !defined(language))][0] {
     _id,
+    language,
     title,
     description,
     keywords,
     url,
+    areaServed,
     phone,
     address,
     mail,
@@ -40,13 +42,13 @@ export const settingsQuery = defineQuery(`
       label,
       href
     },
-    footerGalleryImages[]{
-      _key,
-      image{
-        ...,
-        asset->{ _id, url, metadata{ lqip, dimensions } }
-      },
-      aspectRatio
+    logo{
+      ...,
+      asset->{ _id, url, metadata{ lqip, dimensions } }
+    },
+    openGraphImage{
+      ...,
+      asset->{ _id, url, metadata{ lqip, dimensions } }
     }
   }
 `);
