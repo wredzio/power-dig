@@ -111,20 +111,18 @@ export function AnimatedThemeToggler({ className }: { className?: string }) {
               transition: "background-color 0.35s ease",
             }}
           >
+            {/* "I" glyph drawn as a bar so the button has no visible text */}
             <span
               aria-hidden="true"
               style={{
-                fontSize: 10,
-                fontWeight: 900,
-                letterSpacing: "0.05em",
-                color: isDark ? colors.glyphOn : colors.glyphOff,
-                fontFamily: "var(--font-lato), system-ui, sans-serif",
-                lineHeight: 1,
-                userSelect: "none",
+                display: "block",
+                width: 2,
+                height: 9,
+                borderRadius: 1,
+                backgroundColor: isDark ? colors.glyphOn : colors.glyphOff,
+                transition: "background-color 0.35s ease",
               }}
-            >
-              I
-            </span>
+            />
           </div>
 
           {/* Divider line */}
@@ -159,20 +157,18 @@ export function AnimatedThemeToggler({ className }: { className?: string }) {
               transition: "background-color 0.35s ease",
             }}
           >
+            {/* "O" glyph drawn as a ring so the button has no visible text */}
             <span
               aria-hidden="true"
               style={{
-                fontSize: 10,
-                fontWeight: 900,
-                letterSpacing: "0.05em",
-                color: isDark ? colors.glyphOff : colors.glyphOn,
-                fontFamily: "var(--font-lato), system-ui, sans-serif",
-                lineHeight: 1,
-                userSelect: "none",
+                display: "block",
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                border: `2px solid ${isDark ? colors.glyphOff : colors.glyphOn}`,
+                transition: "border-color 0.35s ease",
               }}
-            >
-              O
-            </span>
+            />
           </div>
         </div>
       </div>

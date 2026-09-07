@@ -148,13 +148,6 @@ export const pageQuery =
     _type == "subheadingSection" => {
       ...,
     },
-    _type == "dividerSection" => {
-      ...,
-      image{
-        ...,
-        ${IMAGE_ASSET}
-      },
-    },
   }
 }`);
 

@@ -1,28 +1,14 @@
 {
   "common": {
     "contact": "Kontakt",
-    "phone": "Telefon",
-    "address": "Adres",
-    "email": "Email",
-    "menu": "Menu",
-    "navigation": "Nawigacja",
     "home": "Strona główna",
     "allRightsReserved": "Wszelkie prawa zastrzeżone."
   },
-  "localeSwitcher": {
-    "label": "Zmień język",
-    "pl": "PL",
-    "en": "EN"
-  },
   "page": {
-    "notFound": "Strona nie znaleziona",
     "setupTitle": "PowerDig Serwis",
-    "setupDescription": "Utwórz w Sanity stronę ze slugiem \"/\" dla tego języka, aby wyświetlić treść.",
-    "envDescription": "Ustaw zmienne środowiskowe Sanity w .env.local, aby połączyć CMS."
+    "setupDescription": "Utwórz w Sanity stronę ze slugiem \"/\" dla tego języka, aby wyświetlić treść."
   },
   "footer": {
-    "navigation": "Nawigacja",
-    "legal": "Informacje prawne",
     "openingHours": "Godziny otwarcia",
     "menu": "Menu"
   },

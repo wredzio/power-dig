@@ -37,19 +37,6 @@ export type GalleryImageImage = {
   _type: "image";
 };
 
-export type DividerSection = {
-  _type: "dividerSection";
-  style?: "tartan" | "solid" | "line";
-  image?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-  height?: "sm" | "md" | "lg";
-};
-
 export type SubheadingSection = {
   _type: "subheadingSection";
   id?: string;
@@ -424,9 +411,6 @@ export type Page = {
     | ({
         _key: string;
       } & SubheadingSection)
-    | ({
-        _key: string;
-      } & DividerSection)
   >;
 };
 
@@ -537,7 +521,6 @@ export type AllSanitySchemaTypes =
   | SanityImageAssetReference
   | CertificateImage
   | GalleryImageImage
-  | DividerSection
   | SubheadingSection
   | ImageSection
   | ContactSection
@@ -573,7 +556,7 @@ export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: sanity/schemas/pages/page.queries.ts
 // Variable: pageQuery
-// Query: *[_type == "page" && slug.current == $slug && (language == $language || !defined(language))][0]{  _id,  _type,  _createdAt,  _updatedAt,  _rev,  title,  slug,  language,  metadata{    metaTitle,    metaDescription,    keywords,    ogImage{      ...,      asset->{ _id, url, metadata { lqip, dimensions } }    },    noIndex  },  sections[]{    _key,    _type,    _type == "heroSection" => {      id,      title,      description,      tags,      ctaLabel,      ctaHref,    },    _type == "servicesSection" => {      id,      supra,      title,      subtitle,      services[]{        _key,        icon,        tag,        title,        description,        details,        note,      },    },    _type == "aboutSection" => {      id,      supra,      title,      description,      features[]{ _key, title, description },      image{        ...,        asset->{ _id, url, metadata { lqip, dimensions } }      },      ownerName,      ownerTitle,      imagePlaceholder,    },    _type == "miniExcavatorSection" => {      id,      supra,      title,      description,      description2,      ctaLabel,      ctaHref,      featuresTitle,      features,      equipmentName,      equipmentSpecs,    },    _type == "certificatesSection" => {      id,      supra,      title,      subtitle,      items[]{        _key,        title,        issuer,        number,        validUntil,        description,        image{          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        },      },      footnote,    },    _type == "gallerySection" => {      id,      supra,      title,      subtitle,      images[]{        _key,        alt,        caption,        category,        image{          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        },      },      footnote,    },    _type == "faqSection" => {      id,      supra,      title,      subtitle,      items[]{ _key, question, answer },    },    _type == "contactSection" => {      id,      subtitle,      title,      phone,      email,      address,      hours[]{ _key, icon, days, time },    },    _type == "imageSection" => {      ...,      image{        ...,        image{          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        },        aspectRatio      },      body[]{        ...,        _type == "image" => {          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        }      },    },    _type == "subheadingSection" => {      ...,    },    _type == "dividerSection" => {      ...,      image{        ...,        asset->{ _id, url, metadata { lqip, dimensions } }      },    },  }}
+// Query: *[_type == "page" && slug.current == $slug && (language == $language || !defined(language))][0]{  _id,  _type,  _createdAt,  _updatedAt,  _rev,  title,  slug,  language,  metadata{    metaTitle,    metaDescription,    keywords,    ogImage{      ...,      asset->{ _id, url, metadata { lqip, dimensions } }    },    noIndex  },  sections[]{    _key,    _type,    _type == "heroSection" => {      id,      title,      description,      tags,      ctaLabel,      ctaHref,    },    _type == "servicesSection" => {      id,      supra,      title,      subtitle,      services[]{        _key,        icon,        tag,        title,        description,        details,        note,      },    },    _type == "aboutSection" => {      id,      supra,      title,      description,      features[]{ _key, title, description },      image{        ...,        asset->{ _id, url, metadata { lqip, dimensions } }      },      ownerName,      ownerTitle,      imagePlaceholder,    },    _type == "miniExcavatorSection" => {      id,      supra,      title,      description,      description2,      ctaLabel,      ctaHref,      featuresTitle,      features,      equipmentName,      equipmentSpecs,    },    _type == "certificatesSection" => {      id,      supra,      title,      subtitle,      items[]{        _key,        title,        issuer,        number,        validUntil,        description,        image{          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        },      },      footnote,    },    _type == "gallerySection" => {      id,      supra,      title,      subtitle,      images[]{        _key,        alt,        caption,        category,        image{          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        },      },      footnote,    },    _type == "faqSection" => {      id,      supra,      title,      subtitle,      items[]{ _key, question, answer },    },    _type == "contactSection" => {      id,      subtitle,      title,      phone,      email,      address,      hours[]{ _key, icon, days, time },    },    _type == "imageSection" => {      ...,      image{        ...,        image{          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        },        aspectRatio      },      body[]{        ...,        _type == "image" => {          ...,          asset->{ _id, url, metadata { lqip, dimensions } }        }      },    },    _type == "subheadingSection" => {      ...,    },  }}
 export type PageQueryResult = {
   _id: string;
   _type: "page";
@@ -683,26 +666,6 @@ export type PageQueryResult = {
           days: string | null;
           time: string | null;
         }> | null;
-      }
-    | {
-        _key: string;
-        _type: "dividerSection";
-        style?: "line" | "solid" | "tartan";
-        image: {
-          asset: {
-            _id: string;
-            url: string | null;
-            metadata: {
-              lqip: string | null;
-              dimensions: SanityImageDimensions | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
-        } | null;
-        height?: "lg" | "md" | "sm";
       }
     | {
         _key: string;
@@ -968,7 +931,7 @@ export type SettingsQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "page" && slug.current == $slug && (language == $language || !defined(language))][0]{\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  _rev,\n  title,\n  slug,\n  language,\n  metadata{\n    metaTitle,\n    metaDescription,\n    keywords,\n    ogImage{\n      ...,\n      asset->{ _id, url, metadata { lqip, dimensions } }\n    },\n    noIndex\n  },\n  sections[]{\n    _key,\n    _type,\n    _type == "heroSection" => {\n      id,\n      title,\n      description,\n      tags,\n      ctaLabel,\n      ctaHref,\n    },\n    _type == "servicesSection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      services[]{\n        _key,\n        icon,\n        tag,\n        title,\n        description,\n        details,\n        note,\n      },\n    },\n    _type == "aboutSection" => {\n      id,\n      supra,\n      title,\n      description,\n      features[]{ _key, title, description },\n      image{\n        ...,\n        asset->{ _id, url, metadata { lqip, dimensions } }\n      },\n      ownerName,\n      ownerTitle,\n      imagePlaceholder,\n    },\n    _type == "miniExcavatorSection" => {\n      id,\n      supra,\n      title,\n      description,\n      description2,\n      ctaLabel,\n      ctaHref,\n      featuresTitle,\n      features,\n      equipmentName,\n      equipmentSpecs,\n    },\n    _type == "certificatesSection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      items[]{\n        _key,\n        title,\n        issuer,\n        number,\n        validUntil,\n        description,\n        image{\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        },\n      },\n      footnote,\n    },\n    _type == "gallerySection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      images[]{\n        _key,\n        alt,\n        caption,\n        category,\n        image{\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        },\n      },\n      footnote,\n    },\n    _type == "faqSection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      items[]{ _key, question, answer },\n    },\n    _type == "contactSection" => {\n      id,\n      subtitle,\n      title,\n      phone,\n      email,\n      address,\n      hours[]{ _key, icon, days, time },\n    },\n    _type == "imageSection" => {\n      ...,\n      image{\n        ...,\n        image{\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        },\n        aspectRatio\n      },\n      body[]{\n        ...,\n        _type == "image" => {\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        }\n      },\n    },\n    _type == "subheadingSection" => {\n      ...,\n    },\n    _type == "dividerSection" => {\n      ...,\n      image{\n        ...,\n        asset->{ _id, url, metadata { lqip, dimensions } }\n      },\n    },\n  }\n}': PageQueryResult;
+    '*[_type == "page" && slug.current == $slug && (language == $language || !defined(language))][0]{\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  _rev,\n  title,\n  slug,\n  language,\n  metadata{\n    metaTitle,\n    metaDescription,\n    keywords,\n    ogImage{\n      ...,\n      asset->{ _id, url, metadata { lqip, dimensions } }\n    },\n    noIndex\n  },\n  sections[]{\n    _key,\n    _type,\n    _type == "heroSection" => {\n      id,\n      title,\n      description,\n      tags,\n      ctaLabel,\n      ctaHref,\n    },\n    _type == "servicesSection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      services[]{\n        _key,\n        icon,\n        tag,\n        title,\n        description,\n        details,\n        note,\n      },\n    },\n    _type == "aboutSection" => {\n      id,\n      supra,\n      title,\n      description,\n      features[]{ _key, title, description },\n      image{\n        ...,\n        asset->{ _id, url, metadata { lqip, dimensions } }\n      },\n      ownerName,\n      ownerTitle,\n      imagePlaceholder,\n    },\n    _type == "miniExcavatorSection" => {\n      id,\n      supra,\n      title,\n      description,\n      description2,\n      ctaLabel,\n      ctaHref,\n      featuresTitle,\n      features,\n      equipmentName,\n      equipmentSpecs,\n    },\n    _type == "certificatesSection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      items[]{\n        _key,\n        title,\n        issuer,\n        number,\n        validUntil,\n        description,\n        image{\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        },\n      },\n      footnote,\n    },\n    _type == "gallerySection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      images[]{\n        _key,\n        alt,\n        caption,\n        category,\n        image{\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        },\n      },\n      footnote,\n    },\n    _type == "faqSection" => {\n      id,\n      supra,\n      title,\n      subtitle,\n      items[]{ _key, question, answer },\n    },\n    _type == "contactSection" => {\n      id,\n      subtitle,\n      title,\n      phone,\n      email,\n      address,\n      hours[]{ _key, icon, days, time },\n    },\n    _type == "imageSection" => {\n      ...,\n      image{\n        ...,\n        image{\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        },\n        aspectRatio\n      },\n      body[]{\n        ...,\n        _type == "image" => {\n          ...,\n          asset->{ _id, url, metadata { lqip, dimensions } }\n        }\n      },\n    },\n    _type == "subheadingSection" => {\n      ...,\n    },\n  }\n}': PageQueryResult;
     '*[_type == "page" && (language == $language || !defined(language))]{\n  _id,\n  title,\n  slug\n}': AllPagesQueryResult;
     '*[_type == "settings" && (language == $language || !defined(language))][0]{\n  _id,\n  navigation{\n    navigationLinks[]{\n      label,\n      href,\n      external,\n      order\n    } | order(order asc)\n  }\n}': NavigationQueryResult;
     '\n  *[_type == "settings" && (language == $language || !defined(language))][0] {\n    _id,\n    language,\n    title,\n    description,\n    keywords,\n    url,\n    areaServed,\n    phone,\n    address,\n    mail,\n    social,\n    tagline,\n    openingHours[]{\n      _key,\n      days,\n      time\n    },\n    footerNavLinks[]{\n      _key,\n      label,\n      href\n    },\n    footerNavLegalLinks[]{\n      _key,\n      label,\n      href\n    },\n    logo{\n      ...,\n      asset->{ _id, url, metadata{ lqip, dimensions } }\n    },\n    openGraphImage{\n      ...,\n      asset->{ _id, url, metadata{ lqip, dimensions } }\n    }\n  }\n': SettingsQueryResult;

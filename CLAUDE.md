@@ -157,9 +157,6 @@ Tailwind 4 with `@theme inline` in `app/globals.css`. CSS variables use space-se
 | `components/cms/sanity-types.ts`                    | Auto-generated types (placeholder until `pnpm typegen`)                   |
 | `components/ui/locale-switcher/locale-switcher.tsx` | PL↔EN toggle                                                              |
 | `lib/utils.ts`                                      | `cn()` — clsx + tailwind-merge                                            |
-| `lib/result.ts`                                     | Result<T,E> monad (success/failure)                                       |
-| `lib/assert-unreachable.ts`                         | Exhaustiveness check helper                                               |
-| `device-sizes.ts`                                   | Image size constants                                                      |
 
 ## Conventions
 

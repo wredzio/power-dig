@@ -1,28 +1,14 @@
 {
   "common": {
     "contact": "Contact",
-    "phone": "Phone",
-    "address": "Address",
-    "email": "Email",
-    "menu": "Menu",
-    "navigation": "Navigation",
     "home": "Home",
     "allRightsReserved": "All rights reserved."
   },
-  "localeSwitcher": {
-    "label": "Change language",
-    "pl": "PL",
-    "en": "EN"
-  },
   "page": {
-    "notFound": "Page not found",
     "setupTitle": "PowerDig Serwis",
-    "setupDescription": "Create a page with slug \"/\" for this language in Sanity to show content here.",
-    "envDescription": "Set up your Sanity environment variables in .env.local to connect your CMS."
+    "setupDescription": "Create a page with slug \"/\" for this language in Sanity to show content here."
   },
   "footer": {
-    "navigation": "Navigation",
-    "legal": "Legal",
     "openingHours": "Opening hours",
     "menu": "Menu"
   },

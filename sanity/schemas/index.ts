@@ -4,7 +4,6 @@ import { aboutSection } from "./sections/about-section";
 import { blockContentSection } from "./sections/block-content-section";
 import { certificatesSection } from "./sections/certificates-section";
 import { contactSection } from "./sections/contact-section";
-import { dividerSection } from "./sections/divider-section";
 import { faqSection } from "./sections/faq-section";
 import { gallerySection } from "./sections/gallery-section";
 import { heroSection } from "./sections/hero-section";
@@ -29,5 +28,4 @@ export const schemaTypes = [
   contactSection,
   imageSection,
   subheadingSection,
-  dividerSection,
 ];

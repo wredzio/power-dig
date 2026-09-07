@@ -104,7 +104,6 @@ export const pageType = defineType({
         { type: "contactSection" },
         { type: "imageSection" },
         { type: "subheadingSection" },
-        { type: "dividerSection" },
       ],
       validation: (Rule) => Rule.required().min(1),
     }),
