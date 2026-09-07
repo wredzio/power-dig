@@ -6,7 +6,16 @@ import { SanityImage } from "@/components/ui/image/sanity-image";
 
 type Props = PageSectionItem<"certificatesSection">;
 
-const THUMB_WIDTH = 192;
+const IMAGE_WIDTH = 640;
+const DEFAULT_ASPECT = { width: 3, height: 2 } as const;
+
+function naturalAspect(
+  dimensions: { width?: number | null; height?: number | null } | null | undefined,
+): { width: number; height: number } {
+  return dimensions?.width && dimensions?.height
+    ? { width: dimensions.width, height: dimensions.height }
+    : DEFAULT_ASPECT;
+}
 
 function formatValidUntil(value: string, locale: string): string | null {
   const date = new Date(value);
@@ -29,8 +38,9 @@ export async function SanityCertificatesSection(section: Props) {
         <SanityImage
           image={item.image}
           alt={item.image.alt || item.title || ""}
-          width={THUMB_WIDTH}
-          aspectRatio="3/2"
+          width={IMAGE_WIDTH}
+          aspectRatio={naturalAspect(item.image.asset.metadata?.dimensions)}
+          sizes="(min-width: 1024px) 384px, (min-width: 640px) 50vw, 100vw"
         />
       ) : undefined,
     };

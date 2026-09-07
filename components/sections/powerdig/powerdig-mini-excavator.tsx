@@ -139,13 +139,6 @@ export function PowerDigMiniExcavator({
                 style={{ borderColor: withAlpha(BRAND_ORANGE, "22") }}
               >
                 <div className="flex items-center gap-3">
-                  <div
-                    className="flex h-10 w-10 items-center justify-center rounded-sm text-xl"
-                    style={{ backgroundColor: withAlpha(BRAND_ORANGE, "20") }}
-                    aria-hidden="true"
-                  >
-                    🚜
-                  </div>
                   <div>
                     {equipmentName && (
                       <div

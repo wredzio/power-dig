@@ -47,17 +47,26 @@ export function PowerDigCertificates({
                 backgroundColor: "var(--pd-bg-card)",
               }}
             >
-              <div className="mb-5 flex items-start justify-between gap-4">
+              {item.image && (
                 <div
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-sm"
+                  className="mb-5 flex aspect-[3/2] items-center justify-center overflow-hidden rounded-sm p-3 [&_img]:max-h-full [&_img]:w-auto [&_img]:max-w-full [&_img]:object-contain [&_picture]:contents"
+                  style={{ backgroundColor: "rgba(245, 240, 232, 0.96)" }}
+                >
+                  {item.image}
+                </div>
+              )}
+
+              <div className="mb-4 flex items-center gap-3">
+                <div
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm"
                   style={{ backgroundColor: withAlpha(BRAND_ORANGE, "18") }}
                 >
-                  <Award size={24} color={BRAND_ORANGE} />
+                  <Award size={20} color={BRAND_ORANGE} />
                 </div>
-                {item.image && (
-                  <div className="h-14 w-24 overflow-hidden rounded-sm [&_img]:h-full [&_img]:w-full [&_img]:object-contain [&_picture]:block [&_picture]:h-full">
-                    {item.image}
-                  </div>
+                {(item.issuer || item.number) && (
+                  <p className="text-xs tracking-wider text-[var(--pd-text-dim)] uppercase">
+                    {[item.issuer, item.number].filter(Boolean).join(" · ")}
+                  </p>
                 )}
               </div>
 
