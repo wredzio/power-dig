@@ -37,7 +37,7 @@ export async function FooterSection({
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="flex flex-col gap-5">
             <Logo variant="compact" className="h-20" />
-            {tagline && <p className="text-secondary text-sm">{tagline}</p>}
+            {tagline && <p className="text-primary text-sm">{tagline}</p>}
             {socialLinks && socialLinks.length > 0 && (
               <div className="flex items-center gap-3">
                 {socialLinks.map((social, index) => (

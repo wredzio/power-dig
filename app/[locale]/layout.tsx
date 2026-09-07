@@ -12,7 +12,7 @@ import { routing } from "@/i18n/routing";
 const lato = Lato({
   variable: "--font-lato",
   subsets: ["latin", "latin-ext"],
-  weight: ["300", "400", "700", "900"],
+  weight: ["400", "700", "900"],
   display: "swap",
 });
 

@@ -61,8 +61,8 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
           "after:absolute after:inset-x-0 after:bottom-0 after:h-px",
           "after:bg-gradient-to-r after:from-transparent after:via-[#C87722]/60 after:to-transparent",
           scrolled || menuOpen
-            ? "bg-background/90 shadow-lg shadow-black/20 backdrop-blur-md"
-            : "bg-background/20 backdrop-blur-sm",
+            ? "bg-[rgb(var(--header-bg)/0.92)] shadow-lg shadow-black/20 backdrop-blur-md"
+            : "bg-[rgb(var(--header-bg)/0.35)] backdrop-blur-sm",
           className,
         )}
       >

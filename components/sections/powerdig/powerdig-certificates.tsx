@@ -50,7 +50,7 @@ export function PowerDigCertificates({
               {item.image && (
                 <div
                   className="mb-5 flex aspect-[3/2] items-center justify-center overflow-hidden rounded-sm p-3 [&_img]:max-h-full [&_img]:w-auto [&_img]:max-w-full [&_img]:object-contain [&_picture]:contents"
-                  style={{ backgroundColor: "rgba(245, 240, 232, 0.96)" }}
+                  style={{ backgroundColor: "var(--pd-bg-paper)" }}
                 >
                   {item.image}
                 </div>

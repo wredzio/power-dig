@@ -66,35 +66,42 @@
   --border: 40 35 25;
   --input: 25 25 25;
   --ring: 200 119 34;
+
+  --header-bg: 10 10 10;
 }
 
-/* Light theme override — PowerDig Serwis brand */
+/* Light theme override — PowerDig Serwis brand (light blue) */
 .light {
-  --background: 248 244 236;
-  --foreground: 26 18 8;
+  /* Light theme built around the brand's teal-blue #489EBE (72 158 190) */
+  --background: 231 244 248;
+  --foreground: 15 26 43;
 
   --primary: 200 119 34;
   --primary-foreground: 255 255 255;
 
-  --secondary: 166 97 24;
+  /* Darkened brand orange: >= 4.5:1 on the light surfaces for nav/accent text */
+  --secondary: 160 92 20;
   --secondary-foreground: 255 255 255;
 
-  --muted: 234 228 216;
-  --muted-foreground: 100 80 50;
+  --muted: 207 230 239;
+  --muted-foreground: 47 111 135;
 
-  --card: 255 255 255;
-  --card-foreground: 26 18 8;
-  --popover: 255 255 255;
-  --popover-foreground: 26 18 8;
+  --card: 221 239 246;
+  --card-foreground: 15 26 43;
+  --popover: 240 248 251;
+  --popover-foreground: 15 26 43;
 
   --accent: 230 151 48;
-  --accent-foreground: 26 18 8;
+  --accent-foreground: 15 26 43;
 
   --destructive: 220 53 69;
 
-  --border: 210 200 180;
-  --input: 234 228 216;
+  --border: 169 210 226;
+  --input: 207 230 239;
   --ring: 200 119 34;
+
+  /* Header bar: a clearer blue than the page so the bar reads as part of the motif */
+  --header-bg: 201 227 238;
 }
 
 @layer base {
@@ -112,22 +119,25 @@
     --pd-bg-accent: #1a0d00;
     --pd-text: #f5f0e8;
     --pd-text-muted: rgba(245, 240, 232, 0.6);
-    --pd-text-dim: rgba(245, 240, 232, 0.3);
+    --pd-text-dim: rgba(245, 240, 232, 0.55);
     --pd-border: rgba(200, 119, 34, 0.2);
     --pd-border-card: rgba(200, 119, 34, 0.2);
+    /* Backing panel behind document scans (certificates) */
+    --pd-bg-paper: rgba(245, 240, 232, 0.96);
   }
 
-  /* ─── PowerDig page theme tokens (light) ─── */
+  /* ─── PowerDig page theme tokens (light blue) ─── */
   .light {
-    --pd-bg: #f2ede3;
-    --pd-bg-card: #ffffff;
-    --pd-bg-section: #ede7da;
-    --pd-bg-accent: #fdf5e8;
-    --pd-text: #1a1208;
-    --pd-text-muted: rgba(26, 18, 8, 0.6);
-    --pd-text-dim: rgba(26, 18, 8, 0.35);
-    --pd-border: rgba(200, 119, 34, 0.3);
-    --pd-border-card: rgba(200, 119, 34, 0.25);
+    --pd-bg: #e7f4f8;
+    --pd-bg-card: #ddeff6;
+    --pd-bg-section: #d4eaf3;
+    --pd-bg-accent: #bfdde9;
+    --pd-text: #0f1a2b;
+    --pd-text-muted: rgba(15, 26, 43, 0.68);
+    --pd-text-dim: rgba(15, 26, 43, 0.55);
+    --pd-border: rgba(72, 158, 190, 0.45);
+    --pd-border-card: rgba(72, 158, 190, 0.4);
+    --pd-bg-paper: #f7fbfd;
   }
 
   * {
@@ -156,10 +166,13 @@
   );
 }
 .light .pd-hero-vignette {
+  /* Light mode brightens towards the centre (text sits on a light field),
+     the lightning and the teal show through at the edges */
   background: radial-gradient(
-    ellipse 80% 70% at 50% 50%,
-    rgba(242, 237, 227, 0.4) 0%,
-    rgba(242, 237, 227, 0.88) 100%
+    ellipse 70% 65% at 50% 50%,
+    rgba(231, 244, 248, 0.94) 0%,
+    rgba(231, 244, 248, 0.82) 45%,
+    rgba(120, 190, 215, 0.62) 100%
   );
 }
 

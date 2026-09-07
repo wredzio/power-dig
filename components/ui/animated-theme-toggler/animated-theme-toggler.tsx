@@ -21,8 +21,29 @@ function getServerSnapshot() {
   return true;
 }
 
+/** Rocker-switch colours per theme. Light values follow the light-blue palette. */
+const SWITCH_COLORS = {
+  dark: {
+    plate: "#1c1c1c",
+    plateBorder: "#2e2e2e",
+    leverOff: "#333",
+    leverOn: "#C87722",
+    glyphOff: "#555",
+    glyphOn: "#0A0A0A",
+  },
+  light: {
+    plate: "#cfe6ef",
+    plateBorder: "#9ccbdd",
+    leverOff: "#a9d2e2",
+    leverOn: "#C87722",
+    glyphOff: "#2f6f87",
+    glyphOn: "#0A0A0A",
+  },
+} as const;
+
 export function AnimatedThemeToggler({ className }: { className?: string }) {
   const isDark = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const colors = SWITCH_COLORS[isDark ? "dark" : "light"];
 
   const toggle = useCallback(() => {
     const next = !isDark;
@@ -49,11 +70,11 @@ export function AnimatedThemeToggler({ className }: { className?: string }) {
           height: 52,
           borderRadius: 4,
           padding: 3,
-          backgroundColor: isDark ? "#1c1c1c" : "#d8d2c8",
+          backgroundColor: colors.plate,
           boxShadow: isDark
             ? "0 2px 6px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.06)"
             : "0 2px 6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.6)",
-          border: isDark ? "1px solid #2e2e2e" : "1px solid #bab4aa",
+          border: `1px solid ${colors.plateBorder}`,
           transition: "all 0.35s ease",
           perspective: 120,
         }}
@@ -80,7 +101,7 @@ export function AnimatedThemeToggler({ className }: { className?: string }) {
               right: 0,
               height: "50%",
               borderRadius: "2px 2px 0 0",
-              backgroundColor: isDark ? "#C87722" : "#b0aa9e",
+              backgroundColor: isDark ? colors.leverOn : colors.leverOff,
               boxShadow: isDark
                 ? "inset 0 -1px 0 rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2)"
                 : "inset 0 -1px 0 rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.5)",
@@ -91,11 +112,12 @@ export function AnimatedThemeToggler({ className }: { className?: string }) {
             }}
           >
             <span
+              aria-hidden="true"
               style={{
                 fontSize: 10,
                 fontWeight: 900,
                 letterSpacing: "0.05em",
-                color: isDark ? "#0A0A0A" : "#888",
+                color: isDark ? colors.glyphOn : colors.glyphOff,
                 fontFamily: "var(--font-lato), system-ui, sans-serif",
                 lineHeight: 1,
                 userSelect: "none",
@@ -127,7 +149,7 @@ export function AnimatedThemeToggler({ className }: { className?: string }) {
               right: 0,
               height: "50%",
               borderRadius: "0 0 2px 2px",
-              backgroundColor: isDark ? "#333" : "#C87722",
+              backgroundColor: isDark ? colors.leverOff : colors.leverOn,
               boxShadow: isDark
                 ? "inset 0 1px 0 rgba(0,0,0,0.4), inset 0 -1px 0 rgba(255,255,255,0.05)"
                 : "inset 0 1px 0 rgba(0,0,0,0.15), inset 0 -1px 0 rgba(255,255,255,0.3)",
@@ -138,11 +160,12 @@ export function AnimatedThemeToggler({ className }: { className?: string }) {
             }}
           >
             <span
+              aria-hidden="true"
               style={{
                 fontSize: 10,
                 fontWeight: 900,
                 letterSpacing: "0.05em",
-                color: isDark ? "#555" : "#0A0A0A",
+                color: isDark ? colors.glyphOff : colors.glyphOn,
                 fontFamily: "var(--font-lato), system-ui, sans-serif",
                 lineHeight: 1,
                 userSelect: "none",
@@ -153,7 +176,6 @@ export function AnimatedThemeToggler({ className }: { className?: string }) {
           </div>
         </div>
       </div>
-
     </button>
   );
 }
