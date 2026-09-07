@@ -1,11 +1,9 @@
-"use client";
+import type { CSSProperties } from "react";
 
-import { motion, useAnimationFrame, useMotionValue, useTransform } from "motion/react";
-import { useRef } from "react";
+import { cn } from "@/lib/utils";
 
 interface ShinyTextProps {
   text: string;
-  disabled?: boolean;
   speed?: number;
   className?: string;
   color?: string;
@@ -13,54 +11,27 @@ interface ShinyTextProps {
   spread?: number;
 }
 
+/**
+ * Gradient "shine" sweeping across text. Pure CSS animation (see
+ * `.pd-shiny` in globals.css) – no per-frame JavaScript, and it pauses
+ * automatically for `prefers-reduced-motion`.
+ */
 export function ShinyText({
   text,
-  disabled = false,
   speed = 2,
-  className = "",
+  className,
   color = "#b5b5b5",
   shineColor = "#ffffff",
   spread = 120,
 }: ShinyTextProps) {
-  const progress = useMotionValue(0);
-  const elapsedRef = useRef(0);
-  const lastTimeRef = useRef<number | null>(null);
-  const animationDuration = speed * 1000;
-
-  useAnimationFrame((time) => {
-    if (disabled) {
-      lastTimeRef.current = null;
-      return;
-    }
-    if (lastTimeRef.current === null) {
-      lastTimeRef.current = time;
-      return;
-    }
-    const deltaTime = time - lastTimeRef.current;
-    lastTimeRef.current = time;
-    elapsedRef.current += deltaTime;
-
-    const cycleTime = elapsedRef.current % animationDuration;
-    const p = (cycleTime / animationDuration) * 100;
-    progress.set(p);
-  });
-
-  const backgroundPosition = useTransform(progress, (p) => `${150 - p * 2}% center`);
-
-  const gradientStyle = {
+  const style: CSSProperties = {
     backgroundImage: `linear-gradient(${spread}deg, ${color} 0%, ${color} 35%, ${shineColor} 50%, ${color} 65%, ${color} 100%)`,
-    backgroundSize: "200% auto",
-    WebkitBackgroundClip: "text",
-    backgroundClip: "text",
-    WebkitTextFillColor: "transparent",
+    animationDuration: `${speed}s`,
   };
 
   return (
-    <motion.span
-      className={`inline-block ${className}`}
-      style={{ ...gradientStyle, backgroundPosition }}
-    >
+    <span className={cn("pd-shiny inline-block", className)} style={style}>
       {text}
-    </motion.span>
+    </span>
   );
 }

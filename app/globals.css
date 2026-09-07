@@ -151,6 +151,32 @@
   background: radial-gradient(ellipse 80% 70% at 50% 50%, rgba(242, 237, 227, 0.4) 0%, rgba(242, 237, 227, 0.88) 100%);
 }
 
+/* Shiny text — CSS-only shine sweep (was a per-frame JS animation) */
+.pd-shiny {
+  background-size: 200% auto;
+  background-position: 150% center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation-name: pd-shine;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes pd-shine {
+  from {
+    background-position: 150% center;
+  }
+  to {
+    background-position: -50% center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pd-shiny {
+    animation: none;
+    background-position: 50% center;
+  }
+}
+
 /* Animations */
 @keyframes fade-in {
   from {

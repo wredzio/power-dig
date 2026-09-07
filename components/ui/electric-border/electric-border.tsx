@@ -1,7 +1,10 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+
+import { BORDER_OFFSET, MAX_DPR } from "./electric-draw";
+import { createElectricRenderer } from "./electric-renderer";
 
 interface ElectricBorderProps {
   children: ReactNode;
@@ -13,6 +16,16 @@ interface ElectricBorderProps {
   style?: CSSProperties;
 }
 
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+function currentDpr(): number {
+  return Math.min(window.devicePixelRatio || 1, MAX_DPR);
+}
+
 export function ElectricBorder({
   children,
   color = "#5227FF",
@@ -22,303 +35,75 @@ export function ElectricBorder({
   className,
   style,
 }: ElectricBorderProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasHostRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number | null>(null);
-  const timeRef = useRef(0);
-  const lastFrameTimeRef = useRef(0);
-
-  const random = useCallback((x: number) => {
-    return (Math.sin(x * 12.9898) * 43758.5453) % 1;
-  }, []);
-
-  const noise2D = useCallback(
-    (x: number, y: number) => {
-      const i = Math.floor(x);
-      const j = Math.floor(y);
-      const fx = x - i;
-      const fy = y - j;
-
-      const a = random(i + j * 57);
-      const b = random(i + 1 + j * 57);
-      const c = random(i + (j + 1) * 57);
-      const d = random(i + 1 + (j + 1) * 57);
-
-      const ux = fx * fx * (3.0 - 2.0 * fx);
-      const uy = fy * fy * (3.0 - 2.0 * fy);
-
-      return a * (1 - ux) * (1 - uy) + b * ux * (1 - uy) + c * (1 - ux) * uy + d * ux * uy;
-    },
-    [random],
-  );
-
-  const octavedNoise = useCallback(
-    (
-      x: number,
-      octaves: number,
-      lacunarity: number,
-      gain: number,
-      baseAmplitude: number,
-      baseFrequency: number,
-      time: number,
-      seed: number,
-      baseFlatness: number,
-    ) => {
-      let y = 0;
-      let amplitude = baseAmplitude;
-      let frequency = baseFrequency;
-
-      for (let i = 0; i < octaves; i++) {
-        let octaveAmplitude = amplitude;
-        if (i === 0) octaveAmplitude *= baseFlatness;
-        y += octaveAmplitude * noise2D(frequency * x + seed * 100, time * frequency * 0.3);
-        frequency *= lacunarity;
-        amplitude *= gain;
-      }
-
-      return y;
-    },
-    [noise2D],
-  );
-
-  const getCornerPoint = useCallback(
-    (
-      centerX: number,
-      centerY: number,
-      radius: number,
-      startAngle: number,
-      arcLength: number,
-      progress: number,
-    ) => {
-      const angle = startAngle + progress * arcLength;
-      return {
-        x: centerX + radius * Math.cos(angle),
-        y: centerY + radius * Math.sin(angle),
-      };
-    },
-    [],
-  );
-
-  const getRoundedRectPoint = useCallback(
-    (t: number, left: number, top: number, width: number, height: number, radius: number) => {
-      const straightWidth = width - 2 * radius;
-      const straightHeight = height - 2 * radius;
-      const cornerArc = (Math.PI * radius) / 2;
-      const totalPerimeter = 2 * straightWidth + 2 * straightHeight + 4 * cornerArc;
-      const distance = t * totalPerimeter;
-      let accumulated = 0;
-
-      if (distance <= accumulated + straightWidth) {
-        const progress = (distance - accumulated) / straightWidth;
-        return { x: left + radius + progress * straightWidth, y: top };
-      }
-      accumulated += straightWidth;
-
-      if (distance <= accumulated + cornerArc) {
-        const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(
-          left + width - radius,
-          top + radius,
-          radius,
-          -Math.PI / 2,
-          Math.PI / 2,
-          progress,
-        );
-      }
-      accumulated += cornerArc;
-
-      if (distance <= accumulated + straightHeight) {
-        const progress = (distance - accumulated) / straightHeight;
-        return { x: left + width, y: top + radius + progress * straightHeight };
-      }
-      accumulated += straightHeight;
-
-      if (distance <= accumulated + cornerArc) {
-        const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(
-          left + width - radius,
-          top + height - radius,
-          radius,
-          0,
-          Math.PI / 2,
-          progress,
-        );
-      }
-      accumulated += cornerArc;
-
-      if (distance <= accumulated + straightWidth) {
-        const progress = (distance - accumulated) / straightWidth;
-        return { x: left + width - radius - progress * straightWidth, y: top + height };
-      }
-      accumulated += straightWidth;
-
-      if (distance <= accumulated + cornerArc) {
-        const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(
-          left + radius,
-          top + height - radius,
-          radius,
-          Math.PI / 2,
-          Math.PI / 2,
-          progress,
-        );
-      }
-      accumulated += cornerArc;
-
-      if (distance <= accumulated + straightHeight) {
-        const progress = (distance - accumulated) / straightHeight;
-        return { x: left, y: top + height - radius - progress * straightHeight };
-      }
-      accumulated += straightHeight;
-
-      const progress = (distance - accumulated) / cornerArc;
-      return getCornerPoint(left + radius, top + radius, radius, Math.PI, Math.PI / 2, progress);
-    },
-    [getCornerPoint],
-  );
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const host = canvasHostRef.current;
     const container = containerRef.current;
-    if (!canvas || !container) return;
+    if (!host || !container) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    // The canvas is created per effect run: once a canvas has been handed to
+    // a worker (transferControlToOffscreen) it cannot be reused, and React's
+    // StrictMode re-runs effects in development.
+    const canvas = document.createElement("canvas");
+    canvas.style.display = "block";
+    canvas.style.willChange = "transform";
+    host.appendChild(canvas);
 
-    const octaves = 6;
-    const FRAME_INTERVAL = 1000 / 30;
-    let isVisible = true;
-    const lacunarity = 1.6;
-    const gain = 0.7;
-    const amplitude = chaos;
-    const frequency = 10;
-    const baseFlatness = 0;
-    const displacement = 60;
-    const borderOffset = 60;
-
-    const updateSize = () => {
+    const measure = () => {
       const rect = container.getBoundingClientRect();
-      const width = rect.width + borderOffset * 2;
-      const height = rect.height + borderOffset * 2;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+      const width = rect.width + BORDER_OFFSET * 2;
+      const height = rect.height + BORDER_OFFSET * 2;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      ctx.scale(dpr, dpr);
-      return { width, height };
+      return { width, height, dpr: currentDpr() };
     };
 
-    let { width, height } = updateSize();
+    const renderer = createElectricRenderer(canvas, {
+      ...measure(),
+      color,
+      speed,
+      chaos,
+      borderRadius,
+      static: prefersReducedMotion(),
+    });
+    if (!renderer) {
+      host.removeChild(canvas);
+      return;
+    }
 
-    const drawElectricBorder = (currentTime: number) => {
-      if (!canvas || !ctx || !isVisible) {
-        animationRef.current = null;
-        return;
-      }
-
-      if (currentTime - lastFrameTimeRef.current < FRAME_INTERVAL - 1) {
-        animationRef.current = requestAnimationFrame(drawElectricBorder);
-        return;
-      }
-
-      const deltaTime = (currentTime - lastFrameTimeRef.current) / 1000;
-      timeRef.current += deltaTime * speed;
-      lastFrameTimeRef.current = currentTime;
-
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.scale(dpr, dpr);
-
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.5;
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-
-      const scale = displacement;
-      const left = borderOffset;
-      const top = borderOffset;
-      const borderWidth = width - 2 * borderOffset;
-      const borderHeight = height - 2 * borderOffset;
-      const maxRadius = Math.min(borderWidth, borderHeight) / 2;
-      const radius = Math.min(borderRadius, maxRadius);
-      const approximatePerimeter = 2 * (borderWidth + borderHeight) + 2 * Math.PI * radius;
-      const sampleCount = Math.floor(approximatePerimeter / 2);
-
-      ctx.beginPath();
-
-      for (let i = 0; i <= sampleCount; i++) {
-        const progress = i / sampleCount;
-        const point = getRoundedRectPoint(progress, left, top, borderWidth, borderHeight, radius);
-
-        const xNoise = octavedNoise(
-          progress * 8,
-          octaves,
-          lacunarity,
-          gain,
-          amplitude,
-          frequency,
-          timeRef.current,
-          0,
-          baseFlatness,
-        );
-        const yNoise = octavedNoise(
-          progress * 8,
-          octaves,
-          lacunarity,
-          gain,
-          amplitude,
-          frequency,
-          timeRef.current,
-          1,
-          baseFlatness,
-        );
-
-        const displacedX = point.x + xNoise * scale;
-        const displacedY = point.y + yNoise * scale;
-
-        if (i === 0) ctx.moveTo(displacedX, displacedY);
-        else ctx.lineTo(displacedX, displacedY);
-      }
-
-      ctx.closePath();
-      ctx.stroke();
-
-      animationRef.current = requestAnimationFrame(drawElectricBorder);
-    };
+    let isVisible = true;
+    const sync = () => (isVisible && !document.hidden ? renderer.resume() : renderer.pause());
 
     const resizeObserver = new ResizeObserver(() => {
-      const newSize = updateSize();
-      width = newSize.width;
-      height = newSize.height;
+      const { width, height, dpr } = measure();
+      renderer.resize(width, height, dpr);
     });
     resizeObserver.observe(container);
 
     const intersectionObserver = new IntersectionObserver(
-      (entries) => {
-        isVisible = entries[0].isIntersecting;
-        if (isVisible && !animationRef.current) {
-          lastFrameTimeRef.current = performance.now();
-          animationRef.current = requestAnimationFrame(drawElectricBorder);
-        }
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        sync();
       },
       { threshold: 0 },
     );
     intersectionObserver.observe(container);
-
-    animationRef.current = requestAnimationFrame(drawElectricBorder);
+    document.addEventListener("visibilitychange", sync);
 
     return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+      renderer.dispose();
+      host.removeChild(canvas);
     };
-  }, [color, speed, chaos, borderRadius, octavedNoise, getRoundedRectPoint]);
+  }, [color, speed, chaos, borderRadius]);
 
   const containerStyle: CSSProperties = {
     position: "relative",
-    borderRadius: borderRadius,
+    borderRadius,
     overflow: "visible",
     isolation: "isolate",
     ...style,
@@ -326,8 +111,8 @@ export function ElectricBorder({
 
   return (
     <div ref={containerRef} className={className} style={containerStyle}>
-      {/* Canvas positioned centered over container, extending beyond it */}
       <div
+        ref={canvasHostRef}
         style={{
           position: "absolute",
           top: "50%",
@@ -336,25 +121,16 @@ export function ElectricBorder({
           pointerEvents: "none",
           zIndex: 2,
         }}
-      >
-        <canvas ref={canvasRef} style={{ display: "block", willChange: "transform" }} />
-      </div>
+      />
 
-      {/* Glow layers */}
       <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          borderRadius: borderRadius,
-          pointerEvents: "none",
-          zIndex: 0,
-        }}
+        style={{ position: "absolute", inset: 0, borderRadius, pointerEvents: "none", zIndex: 0 }}
       >
         <div
           style={{
             position: "absolute",
             inset: 0,
-            borderRadius: borderRadius,
+            borderRadius,
             border: `2px solid ${color}99`,
             filter: "blur(1px)",
           }}
@@ -363,7 +139,7 @@ export function ElectricBorder({
           style={{
             position: "absolute",
             inset: 0,
-            borderRadius: borderRadius,
+            borderRadius,
             border: `2px solid ${color}`,
             filter: "blur(4px)",
           }}
@@ -372,7 +148,7 @@ export function ElectricBorder({
           style={{
             position: "absolute",
             inset: 0,
-            borderRadius: borderRadius,
+            borderRadius,
             zIndex: -1,
             transform: "scale(1.1)",
             filter: "blur(32px)",
@@ -382,8 +158,7 @@ export function ElectricBorder({
         />
       </div>
 
-      {/* Content */}
-      <div style={{ position: "relative", borderRadius: borderRadius, zIndex: 1, height: "100%" }}>
+      <div style={{ position: "relative", borderRadius, zIndex: 1, height: "100%" }}>
         {children}
       </div>
     </div>
