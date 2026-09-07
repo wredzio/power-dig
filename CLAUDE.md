@@ -12,15 +12,18 @@ pnpm lint                 # ESLint (eslint .)
 pnpm storybook            # Storybook on port 6006
 pnpm build-storybook      # Static Storybook build
 pnpm typegen              # Sanity typegen → components/cms/sanity-types.ts
+pnpm test                 # Vitest unit tests (lib/, components/**/*.test.ts)
 ```
 
 ## Overview
 
-Minimal forkable core project. Next.js 16 + React 19 + Sanity CMS + Tailwind 4 + Storybook 10. Dark theme default, Inter font, neutral design tokens. Package manager: **pnpm**. Polish used in Sanity schema descriptions.
+PowerDig Serwis (Daniel Głogowski) business-card site, forked from the `core3` starter (git remote `upstream`). Next.js 16 + React 19 + Sanity CMS + Tailwind 4 + Storybook 10 + Vitest. Dark theme default with orange brand (`#C87722`), Lato headings / Heebo body. Package manager: **pnpm**. Polish used in Sanity schema descriptions.
+
+Business data lives in `lib/site-config.ts` (`SITE`) as the fallback; Sanity `settings` overrides at runtime.
 
 ## Sanity
 
-- **Project ID**: `ifnso4q0`
+- **Project ID**: `03kbsvia`
 - **Dataset**: `production`
 - **API version**: `2025-08-07`
 - **Studio**: `/studio` (outside locale routing)
@@ -32,18 +35,38 @@ Minimal forkable core project. Next.js 16 + React 19 + Sanity CMS + Tailwind 4 +
 
 ### Sanity Schema Types
 
-| Type                | File                                            | Description                                   |
-| ------------------- | ----------------------------------------------- | --------------------------------------------- |
-| `page`              | `sanity/schemas/pages/page.ts`                  | Pages with sections, slug scoped per language |
-| `settings`          | `sanity/schemas/settings.ts`                    | Site settings (per language, not singleton)   |
-| `heroSection`       | `sanity/schemas/sections/hero-section.ts`       | Hero with background image                    |
-| `aboutSection`      | `sanity/schemas/sections/about-section.ts`      | About with features list                      |
-| `faqSection`        | `sanity/schemas/sections/faq-section.ts`        | FAQ accordion                                 |
-| `contactSection`    | `sanity/schemas/sections/contact-section.ts`    | Contact form                                  |
-| `imageSection`      | `sanity/schemas/sections/image-section.ts`      | Responsive image                              |
-| `subheadingSection` | `sanity/schemas/sections/subheading-section.ts` | Subheading with rich text                     |
-| `dividerSection`    | `sanity/schemas/sections/divider-section.ts`    | Divider / section separator                   |
-| `responsiveImage`   | `sanity/schemas/objects/responsive-image.ts`    | Reusable image object                         |
+| Type                  | File                                              | Description                                              |
+| --------------------- | ------------------------------------------------- | -------------------------------------------------------- |
+| `page`                | `sanity/schemas/pages/page.ts`                    | Pages with sections + SEO metadata, slug scoped per lang |
+| `settings`            | `sanity/schemas/settings.ts`                      | Site settings per language (SEO, nav, footer, logo)      |
+| `heroSection`         | `sanity/schemas/sections/hero-section.ts`         | Hero: owner, title, tagline, tags, CTA                   |
+| `servicesSection`     | `sanity/schemas/sections/services-section.ts`     | Service cards (Lucide icon, details list, note)          |
+| `aboutSection`        | `sanity/schemas/sections/about-section.ts`        | About with stats and owner portrait                      |
+| `certificatesSection` | `sanity/schemas/sections/certificates-section.ts` | Certificates / licences cards                            |
+| `gallerySection`      | `sanity/schemas/sections/gallery-section.ts`      | Photo gallery with lightbox                              |
+| `faqSection`          | `sanity/schemas/sections/faq-section.ts`          | FAQ accordion (+ FAQPage JSON-LD)                        |
+| `contactSection`      | `sanity/schemas/sections/contact-section.ts`      | Contact: phone, e-mail, info cards                       |
+| `imageSection`        | `sanity/schemas/sections/image-section.ts`        | Responsive image + rich text (generic)                   |
+| `subheadingSection`   | `sanity/schemas/sections/subheading-section.ts`   | Subheading (generic)                                     |
+| `dividerSection`      | `sanity/schemas/sections/divider-section.ts`      | Divider (generic)                                        |
+| `responsiveImage`     | `sanity/schemas/objects/responsive-image.ts`      | Reusable image object                                    |
+
+Every section has an `id` anchor field (`sanity/schemas/objects/anchor-id-field.ts`) that navigation links target (`/#uslugi`).
+
+## SEO
+
+- `lib/seo/page-metadata.ts` — pure `buildPageMetadata()` (title, description, canonical, hreflang, OG, robots); tested in `page-metadata.test.ts`
+- `lib/seo/get-page-metadata.ts` — async wrapper used by both routes' `generateMetadata`
+- `lib/seo/json-ld.ts` — `Electrician` LocalBusiness + `FAQPage` builders, opening-hours parser
+- `app/[locale]/(website)/opengraph-image.tsx` — generated OG card (used unless CMS provides an OG image)
+- `app/sitemap.ts`, `app/robots.ts` — honour `localePrefix: "as-needed"` (pl unprefixed) via `localizedPath()`
+- Routes use ISR (`revalidate = 60`)
+
+## Effects (keep the look, mind the cost)
+
+- `components/ui/lightning/lightning.tsx` — one WebGL pass for both hero bolts (exact composite of the former two canvases), 30 fps cap, pauses off-screen / hidden tab, static frame for `prefers-reduced-motion`, code-split via `next/dynamic`
+- `components/ui/electric-border/` — drawn in a shared Web Worker on `OffscreenCanvas` (`electric-border.worker.ts`), main-thread fallback in `electric-renderer.ts`, math in `electric-noise.ts` / `electric-draw.ts`
+- `components/ui/shiny-text/shiny-text.tsx` — CSS keyframes (`.pd-shiny`), no per-frame JS
 
 ## i18n (next-intl)
 
@@ -64,7 +87,7 @@ Every Sanity section flows through these layers:
 1. **Route** (`app/[locale]/(website)/page.tsx`, `app/[locale]/(website)/[...slug]/page.tsx`) — fetches data from Sanity via GROQ with locale, passes to `<SanityComponents>`
 2. **Registry** (`components/cms/sanity-component.tsx` → `sanity-components.tsx`) — dynamically imports the correct page registry, resolves `_type` to component. Uses `satisfies SanityPageComponents` for type safety
 3. **CMS Adapter** (`components/cms/page/components/sanity-*.tsx`) — transforms Sanity data shapes into clean props for presentation components, wraps in `<PageSection>`
-4. **Presentation** (`components/sections/*/`) — pure UI with zero CMS dependencies, receives only typed props. Each has a `.stories.tsx` file
+4. **Presentation** (`components/sections/powerdig/*`, `components/sections/*/`) — pure UI with zero CMS dependencies, receives only typed props (images arrive as rendered `ReactNode`s). Each has a `.stories.tsx` file. Brand primitives: `components/sections/powerdig/brand.ts`, shared header `section-header.tsx`
 
 ### Adding a New Section
 
