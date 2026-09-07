@@ -166,13 +166,14 @@
   );
 }
 .light .pd-hero-vignette {
-  /* Light mode brightens towards the centre (text sits on a light field),
-     the lightning and the teal show through at the edges */
+  /* Light mode brightens towards the centre (text sits on a light field);
+     the ellipse covers the whole section so no dark band appears before the
+     bottom fade, the lightning shows through faintly at the edges */
   background: radial-gradient(
-    ellipse 70% 65% at 50% 50%,
-    rgba(231, 244, 248, 0.94) 0%,
-    rgba(231, 244, 248, 0.82) 45%,
-    rgba(120, 190, 215, 0.62) 100%
+    ellipse 100% 90% at 50% 45%,
+    rgba(231, 244, 248, 0.95) 0%,
+    rgba(212, 234, 242, 0.9) 55%,
+    rgba(160, 208, 226, 0.86) 100%
   );
 }
 
