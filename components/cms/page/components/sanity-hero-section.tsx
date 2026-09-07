@@ -18,8 +18,6 @@ export async function SanityHeroSection(section: Props) {
   return (
     <PowerDigHero
       id={section.id ?? undefined}
-      ownerName={section.supra || SITE.ownerName}
-      ownerTitle={section.subtitle ?? undefined}
       title={section.title ?? SITE.shortName}
       tagline={section.description ?? undefined}
       serviceTags={section.tags ?? []}

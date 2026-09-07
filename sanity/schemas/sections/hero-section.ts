@@ -9,18 +9,6 @@ export const heroSection = defineType({
   fields: [
     anchorIdField("hero"),
     defineField({
-      name: "supra",
-      type: "string",
-      title: "Imię i nazwisko właściciela",
-      description: "Napis obok logo nad tytułem (np. „Daniel Głogowski”)",
-    }),
-    defineField({
-      name: "subtitle",
-      type: "string",
-      title: "Tytuł zawodowy",
-      description: "Pod imieniem i nazwiskiem (np. „Autoryzowany technik”)",
-    }),
-    defineField({
       name: "title",
       type: "string",
       title: "Nagłówek H1",
@@ -56,6 +44,6 @@ export const heroSection = defineType({
     }),
   ],
   preview: {
-    select: { title: "title", subtitle: "supra" },
+    select: { title: "title", subtitle: "description" },
   },
 });

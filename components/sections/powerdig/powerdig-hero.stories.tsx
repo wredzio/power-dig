@@ -13,8 +13,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    ownerName: "Daniel Głogowski",
-    ownerTitle: "Autoryzowany technik",
     title: "PowerDig Serwis",
     tagline: "Elektryk, serwis AGD i elektroniki, automatyka – szybko i solidnie.",
     serviceTags: ["Instalacje", "Serwis AGD", "Elektronika", "Automatyka", "Smart Home"],

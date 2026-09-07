@@ -36,7 +36,7 @@ export async function FooterSection({
       <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 lg:py-16">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="flex flex-col gap-5">
-            <Logo className="h-20" />
+            <Logo variant="compact" className="h-20" />
             {tagline && <p className="text-secondary text-sm">{tagline}</p>}
             {socialLinks && socialLinks.length > 0 && (
               <div className="flex items-center gap-3">

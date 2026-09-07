@@ -46,7 +46,7 @@ bolt = [c for c in clips if c["scissor"].height > 400][0]          # lightning b
 pbowl = [c for c in clips if c not in (wordmark, bolt)][0]         # bowl of the P
 
 # Sample gradient colours from MuPDF's rasterised shading (raw svg image for the wordmark)
-raw = open("full-raw.svg").read()
+raw = page.get_svg_image(text_as_path=True); open("full-raw.svg", "w").write(raw)
 imgs = re.findall(r'<image x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" xlink:href="data:image/png;base64,([^"]+)"', raw)
 def sample(b64):
     im = Image.open(io.BytesIO(base64.b64decode(b64))).convert("RGBA")
@@ -110,10 +110,21 @@ body_text = re.sub(r'<path[^>]*stroke="[^"]*"[^>]*/>', "", body)
 print("remaining tags in body:", sorted(set(re.findall(r"<(\w+)", body_text))))
 
 body_text = re.sub(r"<path[^>]*/>", "", body_text)  # only glyph <use> elements stay; vector parts are re-emitted above
-def full_svg(serwis_color):
+name_uses = re.findall(r'<use [^>]*fill="#d68136"[^>]*/>', body_text)
+print("owner-name glyphs:", len(name_uses))
+rects_compact = [r for r in rects if not (r.y0 > 400 and r.y1 < 480)]  # drop the DANIEL GŁOGOWSKI line
+bbc = rects_compact[0]
+for r in rects_compact[1:]: bbc |= r
+vb_compact = (bbc.x0 - pad, bbc.y0 - pad, bbc.width + 2 * pad, bbc.height + 2 * pad)
+print("compact viewBox:", [round(v) for v in vb_compact])
+def full_svg(serwis_color, include_name=True, box=None):
+    box = box or vb
     b = re.sub(r'fill="#0d0b0d"', f'fill="{serwis_color}"', body_text)
+    if not include_name:
+        b = re.sub(r'<use [^>]*fill="#d68136"[^>]*/>', "", b)
     b = re.sub(r">\s+<", "><", b).strip()
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="{" ".join(fmt(v) for v in vb)}" role="img" aria-label="PowerDig Serwis Daniel Głogowski">'
+    label = "PowerDig Serwis Daniel Głogowski" if include_name else "PowerDig Serwis"
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="{" ".join(fmt(v) for v in box)}" role="img" aria-label="{label}">'
             f'<defs>{grad}{bolt_grad}{defs}</defs>{vector}{b}</svg>')
 open(f"{OUT}/logo-light.svg", "w").write(full_svg("#111111"))
 open(f"{OUT}/logo-dark.svg", "w").write(full_svg("#F5F0E8"))
@@ -131,6 +142,9 @@ import os
 os.makedirs(f"{PD}/public/brand", exist_ok=True)
 open(f"{PD}/public/brand/logo-light.svg", "w").write(full_svg("#111111"))
 open(f"{PD}/public/brand/logo-dark.svg", "w").write(full_svg("#F5F0E8"))
+open(f"{PD}/public/brand/logo-compact-light.svg", "w").write(full_svg("#111111", include_name=False, box=vb_compact))
+open(f"{PD}/public/brand/logo-compact-dark.svg", "w").write(full_svg("#F5F0E8", include_name=False, box=vb_compact))
+print("compact aspect %.3f" % (vb_compact[2] / vb_compact[3]))
 bx, by, bw, bh = mvb
 S = 600; scale = (S * 0.8) / bh; tx = (S - bw * scale) / 2 - bx * scale; ty = (S - bh * scale) / 2 - by * scale
 def square(bg):

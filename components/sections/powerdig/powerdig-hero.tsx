@@ -3,7 +3,7 @@
 import { ChevronDown, Phone } from "lucide-react";
 import dynamic from "next/dynamic";
 
-import { LogoMark } from "@/components/ui/logo/logo-mark";
+import { Logo } from "@/components/ui/logo/logo";
 import { ShinyText } from "@/components/ui/shiny-text/shiny-text";
 import { scrollToAnchor } from "@/lib/scroll-to-anchor";
 import { cn } from "@/lib/utils";
@@ -26,8 +26,6 @@ const HERO_BOLTS = [
 
 export interface PowerDigHeroProps {
   id?: string;
-  ownerName: string;
-  ownerTitle?: string;
   title: string;
   tagline?: string;
   serviceTags: string[];
@@ -44,8 +42,6 @@ function splitTitle(title: string): [string, string] {
 
 export function PowerDigHero({
   id = "hero",
-  ownerName,
-  ownerTitle,
   title,
   tagline,
   serviceTags,
@@ -74,22 +70,7 @@ export function PowerDigHero({
       />
 
       <div className="relative z-30 flex flex-col items-center px-6 text-center">
-        <div className="mb-8 flex items-center gap-4">
-          <LogoMark size={64} />
-          <div className="text-left">
-            <p
-              className="text-xs font-bold tracking-[0.25em] uppercase"
-              style={{ color: BRAND_ORANGE, fontFamily: HEADING_FONT }}
-            >
-              {ownerName}
-            </p>
-            {ownerTitle && (
-              <p className="text-xs tracking-[0.35em] text-[var(--pd-text-muted)] uppercase">
-                {ownerTitle}
-              </p>
-            )}
-          </div>
-        </div>
+        <Logo variant="full" className="mb-8 h-36 md:h-48" priority />
 
         <h1
           className="mb-4 text-6xl font-black tracking-tight uppercase md:text-8xl"

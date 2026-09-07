@@ -27,8 +27,6 @@ export const pageQuery =
     _type,
     _type == "heroSection" => {
       id,
-      supra,
-      subtitle,
       title,
       description,
       tags,
