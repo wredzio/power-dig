@@ -60,7 +60,7 @@ export default async function Layout({ children, params }: LayoutProps) {
     phone: settings?.phone || SITE.phone,
     email: settings?.mail || SITE.email,
     description: settings?.description,
-    logoUrl: urlForLogo(settings?.logo) ?? `${getSiteUrl(settings?.url)}/icon.png`,
+    logoUrl: urlForLogo(settings?.logo) ?? `${getSiteUrl(settings?.url)}/brand/logo.png`,
     areaServed: settings?.areaServed || SITE.areaServed,
     openingHours: settings?.openingHours,
     locale,

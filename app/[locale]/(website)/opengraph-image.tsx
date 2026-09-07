@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 
+import { LOGO_MARK } from "@/components/ui/logo/logo-mark-paths";
 import { formatPhoneDisplay } from "@/lib/format-phone";
 import { SITE } from "@/lib/site-config";
 import { getSettings } from "@/sanity/lib/get-settings";
@@ -53,14 +54,9 @@ export default async function OpenGraphImage({ params }: ImageProps) {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
-        <svg width="96" height="96" viewBox="0 0 48 48" fill="none">
-          <path
-            d="M6 22L24 6L42 22V44H28V32H20V44H6V22Z"
-            stroke={SITE.brandColor}
-            strokeWidth="2.5"
-            strokeLinejoin="round"
-          />
-          <path d="M22 14L16 24H21L19 34L30 22H25L22 14Z" fill={SITE.brandColor} />
+        <svg width="64" height="106" viewBox={LOGO_MARK.viewBox}>
+          <path d={LOGO_MARK.bolt} fill={LOGO_MARK.gradient.from} />
+          <path d={LOGO_MARK.bowl} fill={LOGO_MARK.gradient.from} />
         </svg>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <span

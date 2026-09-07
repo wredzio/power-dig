@@ -68,7 +68,10 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between py-4">
           <Link href="/" className="group shrink-0" aria-label="Strona główna">
-            <Logo className="transition-opacity duration-200 group-hover:opacity-80" />
+            <Logo
+              className="h-12 transition-opacity duration-200 group-hover:opacity-80 md:h-14"
+              priority
+            />
           </Link>
 
           {/* Desktop nav */}

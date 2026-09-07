@@ -59,7 +59,7 @@ export function PowerDigHero({
   return (
     <section
       id={id}
-      className="relative flex min-h-[calc(100vh-72px)] flex-col items-center justify-center overflow-hidden"
+      className="relative flex min-h-[calc(100dvh-5rem)] flex-col items-center justify-center overflow-hidden md:min-h-[calc(100dvh-5.5rem)]"
       style={{ backgroundColor: "var(--pd-bg)" }}
     >
       <div className="absolute inset-0 z-0">

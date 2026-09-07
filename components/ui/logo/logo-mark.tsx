@@ -1,39 +1,45 @@
+import { LOGO_MARK } from "./logo-mark-paths";
+
 interface LogoMarkProps {
+  /** Rendered height in px; width follows the mark's aspect ratio. */
   size?: number;
   className?: string;
-  color?: string;
 }
 
-const DEFAULT_COLOR = "#C87722";
+const GRADIENT_ID = "pd-logo-mark-gradient";
 
 /**
- * Brand mark (house + lightning bolt). Single source for the header,
- * hero and Open Graph image so a logo swap happens in one place.
+ * Brand mark: the lightning-bolt "P" from the PowerDig logo (vector paths
+ * extracted from the source PDF, see logo-mark-paths.ts).
  */
-export function LogoMark({ size = 36, className, color = DEFAULT_COLOR }: LogoMarkProps) {
+export function LogoMark({ size = 36, className }: LogoMarkProps) {
+  const [, , viewWidth, viewHeight] = LOGO_MARK.viewBox.split(" ").map(Number);
+  const width = Math.round((size * viewWidth) / viewHeight);
+
   return (
     <svg
-      width={size}
+      width={width}
       height={size}
-      viewBox="0 0 48 48"
-      fill="none"
+      viewBox={LOGO_MARK.viewBox}
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       className={className}
     >
-      <path
-        d="M6 22L24 6L42 22V44H28V32H20V44H6V22Z"
-        stroke={color}
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M22 14L16 24H21L19 34L30 22H25L22 14Z"
-        fill={color}
-        stroke={color}
-        strokeWidth="0.5"
-        strokeLinejoin="round"
-      />
+      <defs>
+        <linearGradient
+          id={GRADIENT_ID}
+          gradientUnits="userSpaceOnUse"
+          x1={LOGO_MARK.gradient.x1}
+          y1="0"
+          x2={LOGO_MARK.gradient.x2}
+          y2="0"
+        >
+          <stop offset="0" stopColor={LOGO_MARK.gradient.from} />
+          <stop offset="1" stopColor={LOGO_MARK.gradient.to} />
+        </linearGradient>
+      </defs>
+      <path d={LOGO_MARK.bolt} fill={`url(#${GRADIENT_ID})`} />
+      <path d={LOGO_MARK.bowl} fill={`url(#${GRADIENT_ID})`} />
     </svg>
   );
 }
