@@ -1,23 +1,29 @@
 import type { PageSectionItem } from "@/components/cms/page/sanity-page";
-import { PageSection } from "@/components/layout/page-section/page-section";
-import { FaqSection } from "@/components/sections/faq-section/faq-section";
+import { PowerDigFaq } from "@/components/sections/powerdig/powerdig-faq";
+import { buildFaqJsonLd } from "@/lib/seo/json-ld";
 
-type SanityFaqSectionProps = PageSectionItem<"faqSection">;
+type Props = PageSectionItem<"faqSection">;
 
-export const SanityFaqSection = (props: SanityFaqSectionProps) => {
-  const section = props;
+export function SanityFaqSection(section: Props) {
+  const items = (section.items ?? [])
+    .filter((item) => item.question && item.answer)
+    .map((item) => ({ question: item.question!, answer: item.answer! }));
+
   return (
-    <PageSection key={section._key} id={section.id || undefined}>
-      <FaqSection
+    <>
+      {items.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildFaqJsonLd(items)) }}
+        />
+      )}
+      <PowerDigFaq
+        id={section.id ?? undefined}
+        supra={section.supra ?? undefined}
         title={section.title ?? ""}
-        subtitle={section.subtitle || undefined}
-        items={
-          section.items?.map((item) => ({
-            question: item.question ?? "",
-            answer: item.answer ?? "",
-          })) || []
-        }
+        subtitle={section.subtitle ?? undefined}
+        items={items}
       />
-    </PageSection>
+    </>
   );
-};
+}

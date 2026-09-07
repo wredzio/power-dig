@@ -1,23 +1,46 @@
 import type { PageSectionItem } from "@/components/cms/page/sanity-page";
-import { PageSection } from "@/components/layout/page-section/page-section";
-import { AboutSection } from "@/components/sections/about-section/about-section";
-import type { IconProps } from "@/components/ui/icon";
+import { PowerDigAbout } from "@/components/sections/powerdig/powerdig-about";
+import { SanityPicture } from "@/components/ui/image/sanity-picture";
 
-type SanityAboutSectionProps = PageSectionItem<"aboutSection">;
+type Props = PageSectionItem<"aboutSection">;
 
-export const SanityAboutSection = (props: SanityAboutSectionProps) => {
-  const section = props;
+const PORTRAIT = { width: 280, height: 360 } as const;
+
+function splitParagraphs(text: string | null | undefined): string[] {
+  return (text ?? "")
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
+export function SanityAboutSection(section: Props) {
+  const image = section.image?.asset ? (
+    <SanityPicture
+      image={section.image}
+      alt={section.image.alt || section.ownerName || section.title || ""}
+      breakpoints={[
+        { media: "(min-width: 768px)", width: PORTRAIT.width * 2, aspectRatio: PORTRAIT },
+      ]}
+      fallbackWidth={PORTRAIT.width}
+      fallbackAspectRatio={PORTRAIT}
+      blurDataURL={section.image.asset.metadata?.lqip ?? undefined}
+    />
+  ) : undefined;
+
   return (
-    <PageSection key={section._key} id={section.id || undefined}>
-      <AboutSection
-        title={section.title ?? ""}
-        description={section.description || undefined}
-        features={section.features?.map((f) => ({
-          icon: (f.icon as IconProps["name"]) || undefined,
-          title: f.title ?? "",
-          description: f.description || undefined,
-        }))}
-      />
-    </PageSection>
+    <PowerDigAbout
+      id={section.id ?? undefined}
+      supra={section.supra ?? undefined}
+      title={section.title ?? ""}
+      paragraphs={splitParagraphs(section.description)}
+      stats={(section.features ?? []).map((stat) => ({
+        value: stat.title ?? "",
+        label: stat.description ?? "",
+      }))}
+      ownerName={section.ownerName ?? undefined}
+      ownerTitle={section.ownerTitle ?? undefined}
+      image={image}
+      photoPlaceholder={section.imagePlaceholder ?? undefined}
+    />
   );
-};
+}

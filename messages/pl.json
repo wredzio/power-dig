@@ -16,18 +16,35 @@
   },
   "page": {
     "notFound": "Strona nie znaleziona",
-    "setupTitle": "Core3",
-    "setupDescription": "Skonfiguruj projekt Sanity i utwórz stronę ze slugiem \"/\", aby rozpocząć.",
+    "setupTitle": "PowerDig Serwis",
+    "setupDescription": "Utwórz w Sanity stronę ze slugiem \"/\" dla tego języka, aby wyświetlić treść.",
     "envDescription": "Ustaw zmienne środowiskowe Sanity w .env.local, aby połączyć CMS."
   },
   "footer": {
     "navigation": "Nawigacja",
-    "legal": "Informacje prawne"
+    "legal": "Informacje prawne",
+    "openingHours": "Godziny otwarcia",
+    "menu": "Menu"
   },
   "notFound": {
     "title": "Strona nie istnieje",
     "description": "Strona, której szukasz, nie istnieje lub została przeniesiona.",
     "home": "Strona główna",
     "contact": "Kontakt"
+  },
+  "hero": {
+    "services": "Nasze usługi"
+  },
+  "contact": {
+    "callNow": "Zadzwoń teraz"
+  },
+  "certificates": {
+    "validUntil": "Ważny do: {date}"
+  },
+  "gallery": {
+    "dialog": "Galeria zdjęć",
+    "close": "Zamknij",
+    "previous": "Poprzednie zdjęcie",
+    "next": "Następne zdjęcie"
   }
 }

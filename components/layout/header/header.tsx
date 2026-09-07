@@ -22,10 +22,14 @@ export interface HeaderProps {
 
 export const Header = ({ navigationLinks, className }: HeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  // The menu is "open" only for the route it was opened on, so a navigation
+  // closes it without an effect that sets state.
+  const [menuOpenOnPath, setMenuOpenOnPath] = useState<string | null>(null);
   const [headerH, setHeaderH] = useState(0);
   const headerRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
+  const menuOpen = menuOpenOnPath === pathname;
+  const setMenuOpen = (open: boolean) => setMenuOpenOnPath(open ? pathname : null);
 
   useEffect(() => {
     const measure = () => setHeaderH(headerRef.current?.offsetHeight ?? 0);
@@ -40,11 +44,6 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  // Close on route change
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
 
   const handleLinkClick = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
     setMenuOpen(false);
@@ -82,8 +81,7 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
           {/* Desktop nav */}
           <nav className="hidden items-center gap-8 lg:flex" aria-label="Nawigacja główna">
             {navigationLinks.map((link, i) => {
-              const active =
-                pathname === link.href || pathname.startsWith(link.href + "/");
+              const active = pathname === link.href || pathname.startsWith(link.href + "/");
               if (link.isCtaButton) {
                 return (
                   <Link
@@ -92,7 +90,7 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
                     onClick={(e) => handleLinkClick(e, link.href)}
                     target={link.external ? "_blank" : undefined}
                     rel={link.external ? "noopener noreferrer" : undefined}
-                    className="inline-flex items-center rounded-sm bg-secondary px-5 py-2 text-sm font-semibold uppercase tracking-wide text-secondary-foreground transition-all duration-200 hover:scale-[1.04] hover:bg-secondary/90 hover:shadow-[0_0_20px_rgba(200,119,34,0.4)] active:scale-[0.97]"
+                    className="bg-secondary text-secondary-foreground hover:bg-secondary/90 inline-flex items-center rounded-sm px-5 py-2 text-sm font-semibold tracking-wide uppercase transition-all duration-200 hover:scale-[1.04] hover:shadow-[0_0_20px_rgba(200,119,34,0.4)] active:scale-[0.97]"
                   >
                     {link.label}
                   </Link>
@@ -106,23 +104,23 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
                   className={cn(
-                    "group/link relative text-sm font-medium uppercase tracking-wide transition-colors duration-200",
+                    "group/link relative text-sm font-medium tracking-wide uppercase transition-colors duration-200",
                     active ? "text-secondary" : "text-foreground/80 hover:text-foreground",
                   )}
                 >
                   {link.label}
                   <span
                     className={cn(
-                      "absolute -bottom-1 left-0 h-[2px] bg-secondary transition-all duration-200",
+                      "bg-secondary absolute -bottom-1 left-0 h-[2px] transition-all duration-200",
                       active ? "w-full" : "w-0 group-hover/link:w-full",
                     )}
                   />
                 </Link>
               );
             })}
-            <div className="mx-2 h-5 w-px bg-border" />
+            <div className="bg-border mx-2 h-5 w-px" />
             <LocaleSwitcher />
-            <div className="h-5 w-px bg-border" />
+            <div className="bg-border h-5 w-px" />
             <AnimatedThemeToggler />
           </nav>
 
@@ -131,7 +129,7 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
             <AnimatedThemeToggler />
             <LocaleSwitcher />
             <button
-              onClick={() => setMenuOpen((v) => !v)}
+              onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Zamknij menu" : "Otwórz menu"}
               aria-expanded={menuOpen}
               className="flex h-10 w-10 items-center justify-center"
@@ -139,19 +137,19 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
               <div className="flex h-5 w-6 flex-col justify-between">
                 <span
                   className={cn(
-                    "block h-0.5 w-full origin-center bg-foreground transition-all duration-300",
+                    "bg-foreground block h-0.5 w-full origin-center transition-all duration-300",
                     menuOpen && "translate-y-[9px] rotate-45",
                   )}
                 />
                 <span
                   className={cn(
-                    "block h-0.5 w-full bg-foreground transition-all duration-300",
+                    "bg-foreground block h-0.5 w-full transition-all duration-300",
                     menuOpen && "opacity-0",
                   )}
                 />
                 <span
                   className={cn(
-                    "block h-0.5 w-full origin-center bg-foreground transition-all duration-300",
+                    "bg-foreground block h-0.5 w-full origin-center transition-all duration-300",
                     menuOpen && "-translate-y-[9px] -rotate-45",
                   )}
                 />
@@ -182,8 +180,7 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
           aria-label="Nawigacja mobilna"
         >
           {navigationLinks.map((link, i) => {
-            const active =
-              pathname === link.href || pathname.startsWith(link.href + "/");
+            const active = pathname === link.href || pathname.startsWith(link.href + "/");
             if (link.isCtaButton) {
               return (
                 <Link
@@ -192,7 +189,7 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
                   onClick={(e) => handleLinkClick(e, link.href)}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
-                  className="mt-3 flex items-center justify-center rounded-sm bg-secondary px-4 py-4 text-base font-semibold uppercase tracking-wide text-secondary-foreground"
+                  className="bg-secondary text-secondary-foreground mt-3 flex items-center justify-center rounded-sm px-4 py-4 text-base font-semibold tracking-wide uppercase"
                 >
                   {link.label}
                 </Link>
@@ -209,7 +206,7 @@ export const Header = ({ navigationLinks, className }: HeaderProps) => {
                   "block border-l-2 px-4 py-4 text-lg font-medium transition-colors duration-200",
                   active
                     ? "border-secondary text-secondary"
-                    : "border-transparent text-foreground/80 hover:border-secondary/50 hover:text-secondary",
+                    : "text-foreground/80 hover:border-secondary/50 hover:text-secondary border-transparent",
                 )}
               >
                 {link.label}

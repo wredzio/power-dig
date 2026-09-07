@@ -16,18 +16,35 @@
   },
   "page": {
     "notFound": "Page not found",
-    "setupTitle": "Core3",
-    "setupDescription": "Configure your Sanity project and create a page with slug \"/\" to get started.",
+    "setupTitle": "PowerDig Serwis",
+    "setupDescription": "Create a page with slug \"/\" for this language in Sanity to show content here.",
     "envDescription": "Set up your Sanity environment variables in .env.local to connect your CMS."
   },
   "footer": {
     "navigation": "Navigation",
-    "legal": "Legal"
+    "legal": "Legal",
+    "openingHours": "Opening hours",
+    "menu": "Menu"
   },
   "notFound": {
     "title": "Page not found",
     "description": "The page you are looking for does not exist or has been moved.",
     "home": "Home",
     "contact": "Contact"
+  },
+  "hero": {
+    "services": "Our services"
+  },
+  "contact": {
+    "callNow": "Call now"
+  },
+  "certificates": {
+    "validUntil": "Valid until {date}"
+  },
+  "gallery": {
+    "dialog": "Photo gallery",
+    "close": "Close",
+    "previous": "Previous photo",
+    "next": "Next photo"
   }
 }
